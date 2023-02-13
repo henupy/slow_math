@@ -1,7 +1,7 @@
 """
 Gradient of a 2D scalar field
 
-Some examples are from Wikipedia: https://en.wikipedia.org/wiki/Gradient
+Some example fields are from Wikipedia: https://en.wikipedia.org/wiki/Gradient
 """
 
 import numpy as np
@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 
 # For typing
 num = int | float
+
 
 def sincos(x: num | np.ndarray, y: num | np.ndarray) -> num | np.ndarray:
     """
