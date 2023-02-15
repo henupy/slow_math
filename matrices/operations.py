@@ -12,9 +12,11 @@ def determine_dimensions(mat: list[list]) -> tuple:
     :param mat: Matrix where each nested list is a row
     :return: tuple of (rows, columns)
     """
+    if not mat:
+        raise exs.DimensionError('Empty matrix')
     if not isinstance(mat[0], list):
-        raise exs.MatrixError('Matrix must be defined as a nested list (even if '
-                              'the matrix contains just one row)')
+        raise exs.DimensionError('Matrix must be defined as a nested list (even if '
+                                 'the matrix contains just one row)')
     rows = len(mat)
     cols = len(mat[0])
     if any(len(row) != cols for row in mat):
