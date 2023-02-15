@@ -6,17 +6,26 @@ features
 import exceptions as exs
 
 
-def determine_dimensions(mat: list[list]) -> tuple:
+def _validate_matrix(mat: list[list]) -> None:
     """
-    Finds out the dimensions of a matrix
-    :param mat: Matrix where each nested list is a row
-    :return: tuple of (rows, columns)
+    If the matrix is incorrectly defined, raises an error. Otherwise,
+    does nothing.
+    :param mat:
+    :return:
     """
     if not mat or not mat[0]:
         raise exs.DimensionError('Empty matrix')
     if not isinstance(mat[0], list):
         raise exs.DimensionError('Matrix must be defined as a nested list (even if '
                                  'the matrix contains just one row)')
+
+def determine_dimensions(mat: list[list]) -> tuple:
+    """
+    Finds out the dimensions of a matrix
+    :param mat: Matrix where each nested list is a row
+    :return: tuple of (rows, columns)
+    """
+    _validate_matrix(mat)
     rows = len(mat)
     cols = len(mat[0])
     if any(len(row) != cols for row in mat):
@@ -25,7 +34,7 @@ def determine_dimensions(mat: list[list]) -> tuple:
     return rows, cols
 
 
-def scalar_mult(mat: list | list[list], mul: int | float) -> list | list[list]:
+def scalar_mult(mat: list[list], mul: int | float) -> list[list]:
     """
     Scalar multiplication of a matrix
     :param mat: A row or a column vector
@@ -34,9 +43,9 @@ def scalar_mult(mat: list | list[list], mul: int | float) -> list | list[list]:
     :return: Matrix of same shape as the param, with the elements
     multiplied by the multiplier
     """
+    _validate_matrix(mat)
     if type(mul) not in [int, float]:
         raise ValueError('Non-scalar multiplier')
-    _ = determine_dimensions(mat)
     mult_mat = []
     ind = 0
     for row in mat:
@@ -53,8 +62,9 @@ def transpose(mat: list[list]) -> list[list]:
     :param mat:
     :return:
     """
-    new_mat = []
+    _validate_matrix(mat)
     r, c = determine_dimensions(mat)
+    new_mat = []
     if r == 1:
         for num in mat[0]:
             new_mat.append([num])
@@ -74,6 +84,8 @@ def mat_sum(mat1: list[list], mat2: list[list]) -> list[list]:
     :param mat2: Matrix where the nested lists are columns
     :return: Sum matrix, same shape as the inputs
     """
+    _validate_matrix(mat1)
+    _validate_matrix(mat2)
     dim1 = determine_dimensions(mat1)
     dim2 = determine_dimensions(mat2)
     assert dim1 == dim2, 'Matrices must have same shape'
