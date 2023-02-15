@@ -88,7 +88,8 @@ def mat_sum(mat1: list[list], mat2: list[list]) -> list[list]:
     _validate_matrix(mat2)
     dim1 = determine_dimensions(mat1)
     dim2 = determine_dimensions(mat2)
-    assert dim1 == dim2, 'Matrices must have same shape'
+    if dim1 != dim2:
+        raise exs.DimensionError('Matrices must have same shape')
     sum_mat = [[0] * dim1[1] for _ in range(dim1[0])]
     for i in range(len(mat1)):
         for j in range(len(mat1[i])):
