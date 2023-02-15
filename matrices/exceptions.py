@@ -1,9 +1,9 @@
 """
-File for a custom exception
+File for custom exceptions
 """
 
 class DimensionError(Exception):
     """
-    Custom error for a situation where the matrix dimensions
+    Exception for a situation where the matrix dimensions
     are incorrect
     """
