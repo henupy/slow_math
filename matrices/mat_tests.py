@@ -31,8 +31,14 @@ class TestMatOps(unittest.TestCase):
         mat4 = [[1], [2], [3]]
         self.assertTupleEqual(ops.determine_dimensions(mat4), (3, 1))
         mat5 = [1, 2, 3]
-        with self.assertRaises(exs.MatrixError):
-            ops.determine_dimensions(mat5), (1, 3)
+        with self.assertRaises(exs.DimensionError):
+            ops.determine_dimensions(mat5)
+        mat6 = [[1, 2, 3]]
+        self.assertTupleEqual(ops.determine_dimensions(mat6), (1, 3))
+        with self.assertRaises(exs.DimensionError):
+            ops.determine_dimensions([])
+        with self.assertRaises(exs.DimensionError):
+            ops.determine_dimensions([[]])
 
     def test_scalar_mult(self) -> None:
         """
@@ -43,7 +49,7 @@ class TestMatOps(unittest.TestCase):
         mul = 5
         # Multiplication of a matrix with just a single row
         mat1 = [1, 2, 3, 4]
-        with self.assertRaises(exs.MatrixError):
+        with self.assertRaises(exs.DimensionError):
             ops.scalar_mult(mat1, mul)
         mat2 = [[1, 2, 3, 4]]
         self.assertListEqual(ops.scalar_mult(mat2, mul), [[5, 10, 15, 20]])
@@ -53,8 +59,10 @@ class TestMatOps(unittest.TestCase):
         self.assertListEqual(ops.scalar_mult(mat2, mul), [[5], [10], [15], [20]])
 
         # Multiplication of empty matrices
-        self.assertListEqual(ops.scalar_mult([], mul), [])
-        self.assertListEqual(ops.scalar_mult([[]], mul), [[]])
+        with self.assertRaises(exs.DimensionError):
+            ops.scalar_mult([], mul)
+        with self.assertRaises(exs.DimensionError):
+            ops.scalar_mult([[]], mul)
 
         # Multiplication of a "fuller" matrix
         mat3 = [[1, 2, 3], [4, 5, 6]]
