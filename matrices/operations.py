@@ -3,26 +3,30 @@ A handful of matrix operations that utilise only python's builtin
 features
 """
 
-def scalar_mult(v: list | list[list], m: int | float) -> list | list[list]:
+def scalar_mult(mat: list | list[list], mul: int | float) -> list | list[list]:
     """
-    Function to multiply a vector with a scalar
-    :param v: A row or a column vector
-    :param m: Multiplicator with which the vector's elements are
+    Scalar multiplication of a matrix
+    :param mat: A row or a column vector
+    :param mul: Multiplicator with which the matrix's elements are
     multiplied
-    :return: Vector of same shape as the param, with the elements
+    :return: Matrix of same shape as the param, with the elements
     multiplied by the multiplier
     """
-    if type(v[0]) == list:
-        mult_vect = []
+    if type(mul) not in [int, float]:
+        raise ValueError('Non-scalar multiplier')
+    if not mat:
+        return mat
+    if type(mat[0]) == list:
+        mult_mat = []
         ind = 0
-        for vect in v:
-            mult_vect.append([])
-            for val in vect:
-                mult_vect[ind].append(val * m)
+        for row in mat:
+            mult_mat.append([])
+            for val in row:
+                mult_mat[ind].append(val * mul)
             ind += 1
     else:
-        mult_vect = [i * m for i in v]
-    return mult_vect
+        mult_mat = [i * mul for i in mat]
+    return mult_mat
 
 
 def vect_sum(v1: list | list[list], v2: list | list[list]) -> list | list[list]:
