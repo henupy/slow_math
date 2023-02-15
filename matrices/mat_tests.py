@@ -8,7 +8,18 @@ import exceptions as exs
 
 
 class TestMatOps(unittest.TestCase):
-    def test_determine_dimension(self) -> None:
+    def test_validate_matrix(self) -> None:
+        """
+        :return:
+        """
+        with self.assertRaises(exs.DimensionError):
+            ops.determine_dimensions([1, 2, 3])
+        with self.assertRaises(exs.DimensionError):
+            ops.determine_dimensions([])
+        with self.assertRaises(exs.DimensionError):
+            ops.determine_dimensions([[]])
+
+    def test_determine_dimensions(self) -> None:
         """
         Tests for the function that determines the dimensions of a matrix
         :return:
@@ -30,17 +41,8 @@ class TestMatOps(unittest.TestCase):
         self.assertTupleEqual(ops.determine_dimensions(mat3), (3, 2))
         mat4 = [[1], [2], [3]]
         self.assertTupleEqual(ops.determine_dimensions(mat4), (3, 1))
-        mat5 = [1, 2, 3]
         mat6 = [[1, 2, 3]]
         self.assertTupleEqual(ops.determine_dimensions(mat6), (1, 3))
-
-        # Incorrectly defined matrices
-        with self.assertRaises(exs.DimensionError):
-            ops.determine_dimensions(mat5)
-        with self.assertRaises(exs.DimensionError):
-            ops.determine_dimensions([])
-        with self.assertRaises(exs.DimensionError):
-            ops.determine_dimensions([[]])
 
     def test_scalar_mult(self) -> None:
         """
@@ -71,7 +73,18 @@ class TestMatOps(unittest.TestCase):
         prod = [[5, 10, 15], [20, 25, 30]]
         self.assertListEqual(ops.scalar_mult(mat3, mul), prod)
 
-
+    def test_transpose(self) -> None:
+        """
+        Tests for the transpose function
+        :return:
+        """
+        mat1 = [[1, 2], [3, 4]]
+        mat1_t = [[1, 3], [2, 4]]
+        self.assertListEqual(ops.transpose(mat1), mat1_t)
+        mat2 = [[1, 2, 3]]
+        mat2_t = [[1], [2], [3]]
+        self.assertListEqual(ops.transpose(mat2), mat2_t)
+        self.assertListEqual(ops.transpose(mat2_t), mat2)
 
 def main() -> None:
     suite = unittest.TestSuite()
