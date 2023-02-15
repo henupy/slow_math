@@ -29,19 +29,6 @@ def scalar_mult(mat: list | list[list], mul: int | float) -> list | list[list]:
     return mult_mat
 
 
-def vect_sum(v1: list | list[list], v2: list | list[list]) -> list | list[list]:
-    """
-    Sum of two vectors
-    :param v1: A row or a column vector
-    :param v2: A row or a column vector
-    :return: Vector of same shape as the params, with the elements
-    of the vectors summed together
-    """
-    assert len(v1) == len(v2), 'Vectors must be same length'
-    sum_v = [i + j for i, j in zip(v1, v2)]
-    return sum_v
-
-
 def determine_dimensions(mat: list[list]) -> tuple:
     """
     Finds out the dimensions of a matrix
