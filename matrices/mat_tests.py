@@ -31,10 +31,12 @@ class TestMatOps(unittest.TestCase):
         mat4 = [[1], [2], [3]]
         self.assertTupleEqual(ops.determine_dimensions(mat4), (3, 1))
         mat5 = [1, 2, 3]
-        with self.assertRaises(exs.DimensionError):
-            ops.determine_dimensions(mat5)
         mat6 = [[1, 2, 3]]
         self.assertTupleEqual(ops.determine_dimensions(mat6), (1, 3))
+
+        # Incorrectly defined matrices
+        with self.assertRaises(exs.DimensionError):
+            ops.determine_dimensions(mat5)
         with self.assertRaises(exs.DimensionError):
             ops.determine_dimensions([])
         with self.assertRaises(exs.DimensionError):
