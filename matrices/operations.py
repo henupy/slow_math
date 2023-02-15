@@ -3,6 +3,9 @@ A handful of matrix operations that utilise only python's builtin
 features
 """
 
+import exceptions as exs
+
+
 def scalar_mult(mat: list | list[list], mul: int | float) -> list | list[list]:
     """
     Scalar multiplication of a matrix
@@ -37,8 +40,9 @@ def determine_dimensions(mat: list[list]) -> tuple:
     """
     rows = len(mat)
     cols = len(mat[0])
-    assert all(len(row) == cols for row in mat), 'Some row is longer ' \
-                                                 'than another'
+    if any(len(row) != cols for row in mat):
+        raise exs.DimensionError('At least one of the rows is of different length '
+                                 'than the others')
     return rows, cols
 
 
