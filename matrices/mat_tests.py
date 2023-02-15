@@ -4,6 +4,7 @@ Unittests for the matrix operations
 
 import unittest
 import operations as ops
+import exceptions as exs
 
 
 class TestMatOps(unittest.TestCase):
@@ -30,6 +31,13 @@ class TestMatOps(unittest.TestCase):
         mat3 = [[1, 2, 3], [4, 5, 6]]
         prod = [[5, 10, 15], [20, 25, 30]]
         self.assertListEqual(ops.scalar_mult(mat3, mul), prod)
+
+    def test_determine_dimension(self) -> None:
+        """
+        Tests for the function that determines the dimensions of a matrix
+        :return:
+        """
+        self.assertRaises(exs.DimensionError, ops.determine_dimensions([[1, 2], [3]]))
 
 
 def main() -> None:
