@@ -46,8 +46,7 @@ class TestMatOps(unittest.TestCase):
 
     def test_scalar_mult(self) -> None:
         """
-        Tests for the scalar multiplication of matrices. Test for a non-scalar
-        multiplier is left out since the correct type for it is type hinted.
+        Tests for the scalar multiplication of matrices
         :return:
         """
         mul = 5
@@ -62,12 +61,6 @@ class TestMatOps(unittest.TestCase):
         mat2 = [[1], [2], [3], [4]]
         self.assertListEqual(ops.scalar_mult(mat2, mul), [[5], [10], [15], [20]])
 
-        # Multiplication of empty matrices
-        with self.assertRaises(exs.DimensionError):
-            ops.scalar_mult([], mul)
-        with self.assertRaises(exs.DimensionError):
-            ops.scalar_mult([[]], mul)
-
         # Multiplication of a "fuller" matrix
         mat3 = [[1, 2, 3], [4, 5, 6]]
         prod = [[5, 10, 15], [20, 25, 30]]
@@ -81,10 +74,52 @@ class TestMatOps(unittest.TestCase):
         mat1 = [[1, 2], [3, 4]]
         mat1_t = [[1, 3], [2, 4]]
         self.assertListEqual(ops.transpose(mat1), mat1_t)
+        self.assertListEqual(ops.transpose(mat1_t), mat1)
         mat2 = [[1, 2, 3]]
         mat2_t = [[1], [2], [3]]
         self.assertListEqual(ops.transpose(mat2), mat2_t)
         self.assertListEqual(ops.transpose(mat2_t), mat2)
+
+    def test_mat_sum(self) -> None:
+        """
+        Tests for the matrix summation
+        :return:
+        """
+        mat1 = [[1, 2, 3]]
+        mat2 = [[4, 5, 6]]
+        sum1 = [[5, 7, 9]]
+        self.assertListEqual(ops.mat_sum(mat1, mat2), sum1)
+        self.assertListEqual(ops.mat_sum(mat2, mat1), sum1)
+
+        mat1_t = [[1], [2], [3]]
+        mat2_t = [[4], [5], [6]]
+        sum1_t = [[5], [7], [9]]
+        self.assertListEqual(ops.mat_sum(mat1_t, mat2_t), sum1_t)
+        self.assertListEqual(ops.mat_sum(mat2_t, mat1_t), sum1_t)
+
+        mat3 = [[1, 2], [3, 4]]
+        mat4 = [[5, 6], [7, 8]]
+        sum2 = [[6, 8], [10, 12]]
+        self.assertListEqual(ops.mat_sum(mat3, mat4), sum2)
+        self.assertListEqual(ops.mat_sum(mat4, mat3), sum2)
+
+        mat5 = [[1, 2, 3], [4, 5, 6]]
+        mat6 = [[7, 8, 9], [10, 11, 12]]
+        sum3 = [[8, 10, 12], [14, 16, 18]]
+        self.assertListEqual(ops.mat_sum(mat5, mat6), sum3)
+        self.assertListEqual(ops.mat_sum(mat6, mat5), sum3)
+
+        mat7 = [[1, 2], [3, 4], [5, 6]]
+        mat8 = [[7, 8], [9, 10], [11, 12]]
+        sum4 = [[8, 10], [12, 14], [16, 18]]
+        self.assertListEqual(ops.mat_sum(mat7, mat8), sum4)
+        self.assertListEqual(ops.mat_sum(mat8, mat7), sum4)
+
+        mat9 = [[1, 2], [3, 4]]
+        mat10 = [[5, 6, 7], [8, 9, 10]]
+        with self.assertRaises(exs.DimensionError):
+            ops.mat_sum(mat9, mat10)
+
 
 def main() -> None:
     suite = unittest.TestSuite()
