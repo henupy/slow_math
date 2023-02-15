@@ -6,6 +6,23 @@ features
 import exceptions as exs
 
 
+def determine_dimensions(mat: list[list]) -> tuple:
+    """
+    Finds out the dimensions of a matrix
+    :param mat: Matrix where each nested list is a row
+    :return: tuple of (rows, columns)
+    """
+    if not isinstance(mat[0], list):
+        raise exs.MatrixError('Matrix must be defined as a nested list (even if '
+                              'the matrix contains just one row)')
+    rows = len(mat)
+    cols = len(mat[0])
+    if any(len(row) != cols for row in mat):
+        raise exs.DimensionError('At least one of the rows is of different length '
+                                 'than the others')
+    return rows, cols
+
+
 def scalar_mult(mat: list | list[list], mul: int | float) -> list | list[list]:
     """
     Scalar multiplication of a matrix
@@ -19,31 +36,15 @@ def scalar_mult(mat: list | list[list], mul: int | float) -> list | list[list]:
         raise ValueError('Non-scalar multiplier')
     if not mat:
         return mat
-    if type(mat[0]) == list:
-        mult_mat = []
-        ind = 0
-        for row in mat:
-            mult_mat.append([])
-            for val in row:
-                mult_mat[ind].append(val * mul)
-            ind += 1
-    else:
-        mult_mat = [i * mul for i in mat]
+    _ = determine_dimensions(mat)
+    mult_mat = []
+    ind = 0
+    for row in mat:
+        mult_mat.append([])
+        for val in row:
+            mult_mat[ind].append(val * mul)
+        ind += 1
     return mult_mat
-
-
-def determine_dimensions(mat: list[list]) -> tuple:
-    """
-    Finds out the dimensions of a matrix
-    :param mat: Matrix where each nested list is a row
-    :return: tuple of (rows, columns)
-    """
-    rows = len(mat)
-    cols = len(mat[0])
-    if any(len(row) != cols for row in mat):
-        raise exs.DimensionError('At least one of the rows is of different length '
-                                 'than the others')
-    return rows, cols
 
 
 def transpose(mat: list[list]) -> list[list]:
