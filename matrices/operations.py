@@ -12,7 +12,7 @@ def determine_dimensions(mat: list[list]) -> tuple:
     :param mat: Matrix where each nested list is a row
     :return: tuple of (rows, columns)
     """
-    if not mat:
+    if not mat or not mat[0]:
         raise exs.DimensionError('Empty matrix')
     if not isinstance(mat[0], list):
         raise exs.DimensionError('Matrix must be defined as a nested list (even if '
@@ -36,8 +36,6 @@ def scalar_mult(mat: list | list[list], mul: int | float) -> list | list[list]:
     """
     if type(mul) not in [int, float]:
         raise ValueError('Non-scalar multiplier')
-    if not mat:
-        return mat
     _ = determine_dimensions(mat)
     mult_mat = []
     ind = 0
