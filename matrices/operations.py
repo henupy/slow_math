@@ -143,18 +143,21 @@ def mat_mul(mat1: list[list], mat2: list[list]) -> list[list]:
     :param mat2:
     :return:
     """
+    _validate_matrix(mat1)
+    _validate_matrix(mat2)
     dim1 = determine_dimensions(mat1)
     dim2 = determine_dimensions(mat2)
-    assert dim1[1] == dim2[0], 'Dimension mismatch'
+    if dim1[1] != dim2[0]:
+        raise exs.DimensionError('Invalid dimensions for multiplication')
     prod = []
     if dim2[1] == 1:
-        for i in range(dim1[1]):
-            prod.append([dot_prod(mat1[i], mat2)])
+        for i in range(dim1[0]):
+            prod.append([dot_prod([mat1[i]], mat2)])
         return prod
     mat2 = transpose(mat2)
     for i in range(dim2[1]):
         prod.append([])
-        for j in range(dim1[1]):
-            prod[i].append(dot_prod(mat1[j], mat2[i]))
+        for j in range(dim1[0]):
+            prod[i].append(dot_prod([mat1[j]], [mat2[i]]))
 
     return transpose(prod)
