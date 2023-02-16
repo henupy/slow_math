@@ -3,6 +3,9 @@ Unittests for the matrix operations
 """
 
 import unittest
+
+import numpy as np
+
 import operations as ops
 import exceptions as exs
 
@@ -148,7 +151,31 @@ class TestMatOps(unittest.TestCase):
         v6_t = [[4], [5], [6]]
         self.assertEqual(ops.dot_prod(v5, v6_t), prod1)
 
+    def test_mat_mul(self) -> None:
+        """
+        Tests for the matrix multiplication
+        :return:
+        """
+        # Error cases
+        mat1 = [[1, 2, 3], [4, 5, 6]]
+        mat2 = [[1, 2, 3]]
+        with self.assertRaises(exs.DimensionError):
+            ops.mat_mul(mat1, mat2)
+        with self.assertRaises(exs.DimensionError):
+            ops.mat_mul(mat2, mat1)
+        mat3 = [[1], [2], [3]]
+        with self.assertRaises(exs.DimensionError):
+            ops.mat_mul(mat3, mat1)
 
+        # Valid cases
+        prod1 = [[14], [32]]
+        self.assertListEqual(ops.mat_mul(mat1, mat3), prod1)
+        mat4 = [[1, 2, 3], [4, 5, 6]]
+        mat5 = [[1, 2], [3, 4], [5, 6]]
+        prod2 = [[22, 28], [49, 64]]
+        prod3 = [[9, 12, 15], [19, 26, 33], [29, 40, 51]]
+        self.assertListEqual(ops.mat_mul(mat4, mat5), prod2)
+        self.assertListEqual(ops.mat_mul(mat5, mat4), prod3)
 
 
 def main() -> None:
