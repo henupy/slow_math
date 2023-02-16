@@ -98,7 +98,7 @@ def mat_sum(mat1: list[list], mat2: list[list]) -> list[list]:
     return sum_mat
 
 
-def flatten(lst: list[list]) -> list:
+def _flatten(lst: list[list]) -> list:
     """
     Flattens a nested list
     :param lst: A nested list
@@ -118,11 +118,18 @@ def dot_prod(v1: list[list], v2: list[list]) -> float:
     :param v2: Vector, where the nested lists are the rows
     :return: Dot product of the two vectors
     """
-    if isinstance(v1[0], list):
-        v1 = flatten(v1)
-    if isinstance(v2[0], list):
-        v2 = flatten(v2)
-    assert len(v1) == len(v2), 'Vectors must have same length'
+    _validate_matrix(v1)
+    _validate_matrix(v2)
+    dim1 = determine_dimensions(v1)
+    dim2 = determine_dimensions(v2)
+    if 1 not in dim1:
+        raise exs.DimensionError('v1 must be either a column or a row vector')
+    if 1 not in dim2:
+        raise exs.DimensionError('v2 must be either a column or a row vector')
+    v1 = _flatten(v1)
+    v2 = _flatten(v2)
+    if len(v1) != len(v2):
+        raise exs.DimensionError('Vectors must have same length')
     summa = 0
     for i, j in zip(v1, v2):
         summa += i * j
