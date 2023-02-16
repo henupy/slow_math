@@ -120,6 +120,36 @@ class TestMatOps(unittest.TestCase):
         with self.assertRaises(exs.DimensionError):
             ops.mat_sum(mat9, mat10)
 
+    def test_dot_product(self) -> None:
+        """
+        Tests for the dot product
+        :return:
+        """
+        # Error cases (other than empty vectors)
+        v1 = [[1, 2], [3, 4]]
+        v2 = [[1, 2, 3]]
+        with self.assertRaises(exs.DimensionError):
+            ops.dot_prod(v1, v2)
+        with self.assertRaises(exs.DimensionError):
+            ops.dot_prod(v2, v1)
+        v3 = [[4, 5, 6, 7]]
+        with self.assertRaises(exs.DimensionError):
+            ops.dot_prod(v2, v3)
+        v4 = [[1], [2], [3]]
+        with self.assertRaises(exs.DimensionError):
+            ops.dot_prod(v3, v4)
+
+        # Valid cases
+        v5 = [[1, 2, 3]]
+        v6 = [[4, 5, 6]]
+        prod1 = 32
+        self.assertEqual(ops.dot_prod(v5, v6), prod1)
+        self.assertEqual(ops.dot_prod(v6, v5), prod1)
+        v6_t = [[4], [5], [6]]
+        self.assertEqual(ops.dot_prod(v5, v6_t), prod1)
+
+
+
 
 def main() -> None:
     suite = unittest.TestSuite()
