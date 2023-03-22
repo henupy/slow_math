@@ -1,84 +1,105 @@
 """
-Some ways to integrate numerically
+Some ways to integrate numerically a one-dimensional function, i.e., find
+the area under a curve of form y = f(x)
 """
 
-import sys
-import math
-import random
+import numpy as np
+import matplotlib.pyplot as plt
+
+from typing import Callable
+
+# For typing
+numeric = int | float
 
 
-class NumInt:
-    def __init__(self, f: callable, a: int | float,
-                 b: int | float) -> None:
-        """
-        :param f: The function to be integrated, must be an actual
-        python-function
-        :param a: Lower integration limit
-        :param b: Upper integration limit
-        """
-        self.f = f
-        self.a = a
-        self.b = b
-
-    def mc(self, num_points: int, y_max: float) -> float:
-        """
-        :param num_points: Number of random points to be sampled
-        :param y_max: The maximum value of y that defines the box around
-        the function
-        :return:
-        """
-        count, in_area = 0, 0
-        while count < num_points:
-            x_coord = random.uniform(self.a, self.b)
-            y_coord = random.uniform(0, y_max)
-            if y_coord < self.f(x_coord):
-                in_area += 1
-            count += 1
-        total_area = (self.b - self.a) * y_max
-        area = in_area / count * total_area
-        return area
-
-    def rectangles(self, num_rects: int) -> float:
-        """
-        Calculates the integral by dividing the area under the curve
-        to small rectangles, and summing the area of the rectangles
-        :param num_rects: Number of rectangles
-        :return:
-        """
-        h = (self.b - self.a) / num_rects
-        total_area = 0
-        for i in range(num_rects):
-            xn = self.a + (h / 2) + i * h
-            area = self.f(xn) * h
-            total_area += area
-
-        return total_area
+def mc(f: Callable, a: numeric, b: numeric, num_points: int = int(1e5)) -> numeric:
+    """
+    Numerical integration using the Monte Carlo method, i.e., sampling
+    a number of random points
+    :param f: Function to be integrated
+    :param a: Lower integration limit
+    :param b: Upper integration limit
+    :param num_points: Number of random points to be sampled (default 1e5)
+    :return:
+    """
+    x = np.linspace(a, b, num_points, endpoint=True)
+    y = f(x)
+    y_max = np.max(y)
+    y_points = np.random.random(size=(num_points, )) * y_max
+    area_fraction = np.sum(y_points < y) / num_points
+    return area_fraction * (b - a) * y_max
 
 
-def logfun(x: int | float) -> float:
-    if x == 0:
-        x = sys.float_info.epsilon
-    return math.log(x) / x
+def rect(f: Callable, a: numeric, b: numeric, n_rects: int = int(1e3)) -> numeric:
+    """
+    Calculates the integral by dividing the area under the curve
+    to small rectangles, and summing the area of the rectangles
+    :param f: Function to be integrated
+    :param a: Lower integration limit
+    :param b: Upper integration limit
+    :param n_rects: Number of rectangles that the area is divided into
+    :return:
+    """
+    x = np.linspace(a, b, n_rects, endpoint=True)
+    y = f(x)
+    dx = x[1] - x[0]
+    return float(np.sum(y * dx))
 
 
-def cosfun(x: int | float) -> float:
-    return x * math.cos(x)
+def logfun(x: numeric | np.ndarray) -> numeric | np.ndarray:
+    """
+    :param x:
+    :return:
+    """
+    return np.log(x) / x
 
 
-def expfun(x: int | float) -> float:
-    return x ** 3 * math.exp(x ** 2)
+def cosfun(x: numeric | np.ndarray) -> float | np.ndarray:
+    """
+    :param x:
+    :return:
+    """
+    return x * np.cos(x)
+
+
+def expfun(x: numeric | np.ndarray) -> float | np.ndarray:
+    """
+    :param x:
+    :return:
+    """
+    return np.power(x, 3) * np.exp(np.power(x, 2))
+
+
+def fun1(x: int | float | np.ndarray) -> float | np.ndarray:
+    """
+    :param x:
+    :return:
+    """
+    return np.power(x, 2) + 2 * x
+
+
+def fun2(x: int | float | np.ndarray) -> float | np.ndarray:
+    """
+    :param x:
+    :return:
+    """
+    return x - 2
 
 
 def main():
-    a, b = 0, 2
-    numint = NumInt(expfun, a, b)
-    points_mc = int(1e5)
-    rects = 1000
-    y_max = expfun(b)
-    area_mc = numint.mc(points_mc, y_max)
-    area_rect = numint.rectangles(rects)
+    # TODO: Add functionality for 'negative' areas (Monte Carlo)
+    # TODO: Add Simpson's rule
+    a, b = 0, 4
+    func = fun1
+    area_mc = mc(f=func, a=a, b=b)
+    area_rect = rect(f=func, a=a, b=b)
     print(f'Monte Carlo: {area_mc:.4f}')
     print(f'Rectangle: {area_rect:.4f}')
+    x = np.linspace(0, 5, 100)
+    y = func(x)
+    plt.plot(x, y)
+    plt.grid()
+    plt.show()
 
 
 if __name__ == '__main__':
