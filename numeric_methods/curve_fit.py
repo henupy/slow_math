@@ -107,7 +107,7 @@ def _gauss_newton(func: Callable, x: np.ndarray, y: np.ndarray,
         b = -jacobian.T @ _residual(func, x, y, params_old).T
         diff = np.linalg.solve(a, b)
         params_new = params_old + diff
-        l2norm = np.sqrt(sum(diff ** 2))
+        l2norm = np.sqrt(np.sum(np.power(diff, 2)))
         params_old = params_new
     return params_new
 
