@@ -81,8 +81,8 @@ def _gradient(func: Callable, x: np.ndarray, y: np.ndarray, params: np.ndarray,
         new_params[i] = params + h_arr[i]
     grads = np.zeros((n, x.shape[0]))
     for i in range(n):
-        res1 = _residual(func, x, y, new_params[i])
-        res2 = _residual(func, x, y, params)
+        res1 = _residual(func=func, x=x, y=y, params=new_params[i])
+        res2 = _residual(func=func, x=x, y=y, params=params)
         grads[i] = (res1 - res2) / h
     return grads.T
 
@@ -98,13 +98,13 @@ def _gauss_newton(func: Callable, x: np.ndarray, y: np.ndarray,
     :param limit:
     :return:
     """
-    jacobian = _gradient(func, x, y, params)
+    jacobian = _gradient(func=func, x=x, y=y, params=params)
     params_old = params
     params_new = np.zeros(params.shape)
     l2norm = 1
     while l2norm > limit:
         a = jacobian.T @ jacobian
-        b = -jacobian.T @ _residual(func, x, y, params_old).T
+        b = -jacobian.T @ _residual(func=func, x=x, y=y, params=params_old).T
         diff = np.linalg.solve(a, b)
         params_new = params_old + diff
         l2norm = np.sqrt(np.sum(np.power(diff, 2)))
@@ -124,7 +124,7 @@ def fit_curve(fit_func: Callable, x: np.ndarray, y: np.ndarray,
     """
     n_params = len(signature(fit_func).parameters) - 1
     params = np.random.random(n_params).T
-    return _gauss_newton(fit_func, x, y, params, limit)
+    return _gauss_newton(func=fit_func, x=x, y=y, params=params, limit=limit)
 
 
 def linear(x: np.ndarray, a: num, b: num) -> np.ndarray:
@@ -155,7 +155,7 @@ def main() -> None:
     x, y = data.T[0], data.T[1]
     plt.scatter(x, y, c='r', label='Data points')
     fun = polynomial
-    popt = fit_curve(fun, x, y)
+    popt = fit_curve(fit_func=fun, x=x, y=y)
     plt.plot(x, fun(x, *popt), 'g-', label='Fitted line')
     plt.grid()
     plt.legend()
