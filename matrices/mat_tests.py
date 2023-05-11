@@ -4,10 +4,8 @@ Unittests for the matrix operations
 
 import unittest
 
-import numpy as np
-
-import operations as ops
 import exceptions as exs
+import operations as ops
 
 
 class TestMatOps(unittest.TestCase):
