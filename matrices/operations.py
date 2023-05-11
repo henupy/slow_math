@@ -226,7 +226,7 @@ def mat_pow(mat: matrix, n: int) -> matrix:
     return res
 
 
-def relative_diff(mat1: matrix, mat2: matrix) -> matrix:
+def _relative_diff(mat1: matrix, mat2: matrix) -> matrix:
     """
     Calculates the relative difference of two matrices elementwise
     :param mat1: Matrix where each nested list corresponds to a row
@@ -256,7 +256,7 @@ def relative_diff(mat1: matrix, mat2: matrix) -> matrix:
     return diff
 
 
-def norm(mat: matrix) -> float:
+def _norm(mat: matrix) -> float:
     """
     Calculates the value of the norm of the (flatten) matrix
     :param mat:
@@ -272,7 +272,7 @@ def mat_exp(mat: matrix, rtol: int | float = 1e-9,
             iter_limit: int = 1000) -> matrix:
     """
     Matrix exponentiation, i.e., raising e to the power of the given
-    matrix. The solution is computed using the Taylor series approximation.
+    matrix. The solution is computed using the matrix power series.
     The solution is deemed to be converged when the relative error is
     below the given tolerance.
     :param mat:
@@ -296,9 +296,9 @@ def mat_exp(mat: matrix, rtol: int | float = 1e-9,
         exp = scalar_mult(mat=mat_pow(mat=mat, n=n), mul=1/f)
         new_res = mat_sum(mat1=exp, mat2=old_res)
         # Calculate the relative difference of the old and new results
-        diff = relative_diff(mat1=old_res, mat2=new_res)
+        diff = _relative_diff(mat1=old_res, mat2=new_res)
         # The norm of the difference is the "total" error
-        error = norm(mat=diff)
+        error = _norm(mat=diff)
         # Save the result of this iteration
         old_res = new_res
         n += 1
