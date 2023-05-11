@@ -1,5 +1,5 @@
 """
-File for custom exceptions
+File for custom exception(s)
 """
 
 class DimensionError(Exception):
