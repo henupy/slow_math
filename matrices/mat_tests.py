@@ -2,10 +2,34 @@
 Unittests for the matrix operations
 """
 
+import math
 import unittest
 
 import exceptions as exs
 import operations as ops
+
+
+# To type hint
+from operations import matrix
+
+
+def _almost_equal(mat1: matrix, mat2: matrix, eps: float = 1e-6) -> bool:
+    """
+    Function to check whether two arrays are equal, within a given
+    margin defined by eps. The margin accounts for floating point or
+    rounding errors. We can assume here that the matrices have same shape.
+    :param mat1:
+    :param mat2:
+    :param eps:
+    :return:
+    """
+    for row1, row2 in zip(mat1, mat2):
+        for v1, v2 in zip(row1, row2):
+            diff = abs(v1 - v2)
+            if diff > eps:
+                return False
+
+    return True
 
 
 class TestMatOps(unittest.TestCase):
@@ -175,6 +199,96 @@ class TestMatOps(unittest.TestCase):
         self.assertListEqual(ops.mat_mul(mat4, mat5), prod2)
         self.assertListEqual(ops.mat_mul(mat5, mat4), prod3)
 
+    def test_identity(self) -> None:
+        """
+        Tests for the generation of identity matrices
+        :return:
+        """
+        # Error cases
+        with self.assertRaises(ValueError):
+            ops.identity_mat(-1)
+        with self.assertRaises(ValueError):
+            ops.identity_mat(0)
+
+        # Valid cases
+        res1 = [[1]]
+        self.assertListEqual(ops.identity_mat(1), res1)
+        res2 = [[1, 0], [0, 1]]
+        self.assertListEqual(ops.identity_mat(2), res2)
+        res3 = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
+        self.assertListEqual(ops.identity_mat(4), res3)
+
+    def test_mat_pow(self) -> None:
+        """
+        Tests for matrix power, i.e., raising a matrix to some integer
+        power
+        :return:
+        """
+        # Error cases due to invalid matrix
+        with self.assertRaises(exs.DimensionError):
+            ops.mat_pow(mat=[], n=1)
+        with self.assertRaises(exs.DimensionError):
+            ops.mat_pow(mat=[[]], n=1)
+        with self.assertRaises(exs.DimensionError):
+            ops.mat_pow(mat=[1, 2], n=1)
+        with self.assertRaises(exs.DimensionError):
+            ops.mat_pow(mat=[[1, 2], [3, 4, 5]], n=1)
+
+        # Error case due to invalid power
+        with self.assertRaises(ValueError):
+            ops.mat_pow(mat=[[1, 2], [3, 4]], n=-1)
+
+        # Valid cases
+        res1 = [[1]]
+        self.assertListEqual(ops.mat_pow(mat=[[5]], n=0), res1)
+        self.assertListEqual(ops.mat_pow(mat=[[5]], n=1), [[5]])
+        self.assertListEqual(ops.mat_pow(mat=[[5]], n=2), [[25]])
+
+        mat1 = [[1, 2], [3, 4]]
+        mul1 = ops.mat_mul(mat1=mat1, mat2=mat1)
+        self.assertListEqual(ops.mat_pow(mat=mat1, n=0), [[1, 0], [0, 1]])
+        self.assertListEqual(ops.mat_pow(mat=mat1, n=1), mat1)
+        self.assertListEqual(ops.mat_pow(mat=mat1, n=2), mul1)
+        res1 = [[37, 54], [81, 118]]
+        self.assertListEqual(ops.mat_pow(mat=mat1, n=3), res1)
+
+
+    def test_mat_exp(self) -> None:
+        """
+        Tests for the matrix exponentiation
+        :return:
+        """
+        # Error cases
+        with self.assertRaises(exs.DimensionError):
+            ops.mat_exp(mat=[])
+        with self.assertRaises(exs.DimensionError):
+            ops.mat_exp(mat=[[]])
+        with self.assertRaises(exs.DimensionError):
+            ops.mat_exp(mat=[1, 2])
+        with self.assertRaises(exs.DimensionError):
+            ops.mat_exp(mat=[[1, 2], [3, 4, 5]])
+
+        # Valid cases
+        epsilon = 1e-6  # Tolerance due to floating point/rounding error
+        m1 = [[0, -math.pi], [math.pi, 0]]
+        res1 = ops.mat_exp(mat=m1)
+        expected1 = [[-1, 0], [0, -1]]
+        self.assertTrue(_almost_equal(mat1=res1, mat2=expected1, eps=epsilon))
+
+        # Example from https://en.wikipedia.org/wiki/Matrix_exponential
+        m2 = [[1, 4], [1, 1]]
+        res2 = ops.mat_exp(mat=m2)
+        t1 = (math.exp(4) + 1) / (2 * math.exp(1))
+        t2 = (math.exp(4) - 1) / math.exp(1)
+        t3 = (math.exp(4) - 1) / (4 * math.exp(1))
+        expected2 = [[t1, t2], [t3, t1]]
+        self.assertTrue(_almost_equal(mat1=res2, mat2=expected2, eps=epsilon))
+
+        m3 = [[-3, 0, 0], [0, 4, 0], [0, 0, 1.73]]
+        res3 = ops.mat_exp(mat=m3)
+        expected3 = [[math.exp(-3), 0, 0], [0, math.exp(4), 0],
+                     [0, 0, math.exp(1.73)]]
+        self.assertTrue(_almost_equal(mat1=res3, mat2=expected3, eps=epsilon))
 
 def main() -> None:
     suite = unittest.TestSuite()
