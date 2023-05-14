@@ -91,8 +91,8 @@ def simpson(f: Callable, a: numeric, b: numeric, n: int, rule: str = '1/3') -> n
     :param a: Lower integration limit
     :param b: Upper integration limit
     :param n: Number of areas that the interval (a ... b) is split into. For the '1/3'
-    rule n must be even, and for the '3/8' rule n must be divisible by three. If an
-    'unsuitable' n is given, it will be modified to be suitable.
+        rule n must be even, and for the '3/8' rule n must be divisible by three.
+        If an 'unsuitable' n is given, it will be modified to be suitable.
     :param rule: Which rule ('1/3' or ('3/8') is used. Defaults to ('1/3')
     :return:
     """

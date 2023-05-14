@@ -173,8 +173,8 @@ def visualise(x: np.ndarray, y: np.ndarray, field: np.ndarray,
     :param field: The scalar field
     :param nabla: The gradient of the scalar field
     :param skip: How many data points to skip so that the gradient vectors are
-    not plotted at every point. For example, if skip == 2, the vectors are
-    plotted at every other data point.
+        not plotted at every point. For example, if skip == 2, the vectors are
+        plotted at every other data point.
     :return:
     """
     u, v = nabla[::skip, ::skip, 0], nabla[::skip, ::skip, 1]

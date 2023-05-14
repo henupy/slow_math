@@ -24,8 +24,8 @@ def eulerfw(diff_eq: Callable, y0: num, trange: np.ndarray, *args) \
     :param trange: Time points where the equation is solved
     :param args: Other arguments for the differential equation
     :return: A m x n size matrix, where m is the amount of equations
-    and n is the amount of timesteps. Contains values for each equation
-    at each timestep.
+        and n is the amount of timesteps. Contains values for each equation
+        at each timestep.
     """
     m = trange.size
     if not isinstance(y0, np.ndarray):
@@ -51,8 +51,8 @@ def eulerbw(diff_eq: Callable, y0: num, trange: np.ndarray, *args) \
     :param trange: Time points where the equation is solved
     :param args: Other arguments for the differential equation
     :return: A m x n size matrix, where m is the amount of equations
-    and n is the amount of timesteps. Contains values for each equation
-    at each timestep.
+        and n is the amount of timesteps. Contains values for each equation
+        at each timestep.
     """
     if not isinstance(y0, np.ndarray):
         y0 = np.array(y0)
@@ -78,14 +78,14 @@ def rk4(diff_eq: Callable, y0: num, trange: np.ndarray, *args) -> np.ndarray:
     Solves a system of first-order differential equations using the
     classic Runge-Kutta method
     :param diff_eq: Function which returns the righthandside of the
-    equations making up the system of equations
+        equations making up the system of equations
     :param y0: Initial values for y and y' (i.e. the terms in the system
-    of equations)
+        of equations)
     :param trange: Time points for which the equation is solved
     :param args: Any additional paramaters for the differential equation
     :return: A m x n size matrix, where m is the amount of equations
-    and n is the amount of timesteps. Contains values for each equation
-    at each timestep.
+        and n is the amount of timesteps. Contains values for each equation
+        at each timestep.
     """
     m = trange.size
     dt = trange[1] - trange[0]

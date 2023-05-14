@@ -15,7 +15,7 @@ def newton(f: callable, diff: callable, a: int | float,
     :param diff: The derivative of the function
     :param a: Initial guess for the root
     :param limit: Approximation limit; how close should the
-    approximation be before the iteration is ended
+        approximation be before the iteration is ended
     :return:
     """
     error = int(1e10)

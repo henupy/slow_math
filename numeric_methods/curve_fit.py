@@ -40,7 +40,7 @@ def gen_noicy_data(func: Callable, x: np.ndarray, params: np.ndarray,
     :param params: The parameters to the given function
     :param n_points: Number of datapoints
     :param noice_factor: How much the datapoints can deviate from the function's
-    curve
+        curve
     :return:
     """
     xmin, xmax = x[0], x[-1]

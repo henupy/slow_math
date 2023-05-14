@@ -59,9 +59,9 @@ def scalar_mult(mat: matrix, mul: int | float) -> matrix:
     Scalar multiplication of a matrix
     :param mat: Matrix where each nested list corresponds to a row
     :param mul: Multiplicator with which the matrix's elements are
-    multiplied. Must be a number.
+        multiplied. Must be a number.
     :return: Matrix of same shape as the param, with the elements
-    multiplied by the multiplier
+        multiplied by the multiplier
     """
     _validate_matrix(mat=mat)
     if type(mul) not in [int, float]:
@@ -232,8 +232,8 @@ def _relative_diff(mat1: matrix, mat2: matrix) -> matrix:
     :param mat1: Matrix where each nested list corresponds to a row
     :param mat2: Matrix where each nested list corresponds to a row
     :return: A matrix of the same shape as the matrices passed as params,
-    with each element containing the relative difference of the two matrices'
-    elements at the corresponding locations.
+        with each element containing the relative difference of the two matrices'
+        elements at the corresponding locations.
     """
     _validate_matrix(mat=mat1)
     _validate_matrix(mat=mat2)

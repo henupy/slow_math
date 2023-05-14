@@ -10,9 +10,9 @@ def backward(f: callable, x: int | float,
     """
     :param f: Function to be differentiated, must be a python-function
     :param x: The point where the function's derivative shall be
-    estimated
+        estimated
     :param h: The small value that is added to the function so that
-    its change can be calculated
+        its change can be calculated
     """
     return (f(x) - f(x - h)) / h
 
@@ -22,9 +22,9 @@ def forward(f: callable, x: int | float,
     """
     :param f: Function to be differentiated, must be a python-function
     :param x: The point where the function's derivative shall be
-    estimated
+        estimated
     :param h: The small value that is added to the function so that
-    its change can be calculated
+        its change can be calculated
     """
     return (f(x + h) - f(x)) / h
 
@@ -34,9 +34,9 @@ def middle(f: callable, x: int | float,
     """
     :param f: Function to be differentiated, must be a python-function
     :param x: The point where the function's derivative shall be
-    estimated
+        estimated
     :param h: The small value that is added to the function so that
-    its change can be calculated
+        its change can be calculated
     """
     return (f(x + h) - f(x - h)) / (2 * h)
 
