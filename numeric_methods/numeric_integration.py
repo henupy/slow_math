@@ -7,11 +7,9 @@ import numpy as np
 
 from typing import Callable
 
-# For typing
-numeric = int | float
 
-
-def mc(f: Callable, a: numeric, b: numeric, num_points: int = int(1e5)) -> numeric:
+def mc(f: Callable, a: int | float, b: int | float, num_points: int = int(1e5)) \
+        -> int | float:
     """
     Numerical integration using the Monte Carlo method, i.e., sampling
     a number of random points and finding out how many land inside the area
@@ -30,7 +28,33 @@ def mc(f: Callable, a: numeric, b: numeric, num_points: int = int(1e5)) -> numer
     return area_fraction * (b - a) * y_max
 
 
-def trapezoid(f: Callable, a: numeric, b: numeric, n_rects: int = int(1e3)) -> numeric:
+def midpoint(f: Callable, a: int | float, b: int | float, n_rects: int = int(1e3)) \
+        -> int | float:
+    """
+    Calculates the definitive integral of the given function by using the
+    midpoint rule (https://en.wikipedia.org/wiki/Riemann_sum) using a
+    uniform grid
+    :param f: Function to be integrated
+    :param a: Lower integration limit
+    :param b: Upper integration limit
+    :param n_rects: Number of rectangles that the area is divided into
+    :return:
+    """
+    # The width of a single rectangle
+    dx = (b - a) / n_rects
+    # The midpoint of the first rectangle
+    x0 = a + dx / 2
+    # The midpoint of the last rectangle
+    x1 = b - dx / 2
+    # Array of midpoints
+    x = np.linspace(x0, x1, n_rects)
+    # y-values at the midpoints
+    y = f(x)
+    return dx * np.sum(y)
+
+
+def trapezoid(f: Callable, a: int | float, b: int | float,
+              n_rects: int = int(1e3)) -> int | float:
     """
     Calculates the definitive integral of the given function by using the
     trapezoidal rule (https://en.wikipedia.org/wiki/Trapezoidal_rule) using a
@@ -47,7 +71,7 @@ def trapezoid(f: Callable, a: numeric, b: numeric, n_rects: int = int(1e3)) -> n
     return dx * (np.sum(y[1:-1]) + (y[-1] + y[0]) / 2)
 
 
-def _simpson13(f: Callable, a: numeric, b: numeric, n: int) -> numeric:
+def _simpson13(f: Callable, a: int | float, b: int | float, n: int) -> int | float:
     """
     Implementation of Simpson's 1/3 rule
     :param f:
@@ -64,7 +88,7 @@ def _simpson13(f: Callable, a: numeric, b: numeric, n: int) -> numeric:
     return 1 / 3 * dx * (y[0] + 4 * odds_sum + 2 * evens_sum + y[-1])
 
 
-def _simpson38(f: Callable, a: numeric, b: numeric, n: int) -> numeric:
+def _simpson38(f: Callable, a: int | float, b: int | float, n: int) -> int | float:
     """
     Implementation of Simpson's 3/8 rule
     :param f:
@@ -82,7 +106,8 @@ def _simpson38(f: Callable, a: numeric, b: numeric, n: int) -> numeric:
     return 3 / 8 * dx * (y[0] + 3 * non_divs_sum + 2 * divs_sum + y[-1])
 
 
-def simpson(f: Callable, a: numeric, b: numeric, n: int, rule: str = '1/3') -> numeric:
+def simpson(f: Callable, a: int | float, b: int | float,
+            n: int, rule: str = '1/3') -> int | float:
     """
     Calculates the definitive integral of the given function using the Simpson's
     composite rule (https://en.wikipedia.org/wiki/Simpson%27s_rule). The specific
@@ -107,7 +132,27 @@ def simpson(f: Callable, a: numeric, b: numeric, n: int, rule: str = '1/3') -> n
     return _simpson13(f=f, a=a, b=b, n=n)
 
 
-def logfun(x: numeric | np.ndarray) -> numeric | np.ndarray:
+def boole(f: Callable, a: int | float, b: int | float) -> int | float:
+    """
+    Calculates the definitive integral of the given function using the
+    simple Boole's rule (https://en.wikipedia.org/wiki/Boole%27s_rule).
+    The error term is ignored for the time being.
+    :param f:
+    :param a:
+    :param b:
+    :return:
+    """
+    h = (b - a) / 4
+    x = [a + i * h for i in range(5)]
+    f1 = 7 * f(x[0])
+    f2 = 32 * f(x[1])
+    f3 = 12 * f(x[2])
+    f4 = 32 * f(x[3])
+    f5 = 7 * f(x[4])
+    return 2 * h / 45 * (f1 + f2 + f3 + f4 + f5)
+
+
+def logfun(x: int | float | np.ndarray) -> int | float | np.ndarray:
     """
     :param x:
     :return:
@@ -115,7 +160,7 @@ def logfun(x: numeric | np.ndarray) -> numeric | np.ndarray:
     return np.log(x) / x
 
 
-def cosfun(x: numeric | np.ndarray) -> float | np.ndarray:
+def cosfun(x: int | float | np.ndarray) -> float | np.ndarray:
     """
     :param x:
     :return:
@@ -123,7 +168,15 @@ def cosfun(x: numeric | np.ndarray) -> float | np.ndarray:
     return x * np.cos(x)
 
 
-def fun1(x: numeric | np.ndarray) -> numeric | np.ndarray:
+def fun(x: int | float | np.ndarray) -> int | float | np.ndarray:
+    """
+    :param x:
+    :return:
+    """
+    return np.power(x, 2)
+
+
+def fun1(x: int | float | np.ndarray) -> int | float | np.ndarray:
     """
     :param x:
     :return:
@@ -131,7 +184,7 @@ def fun1(x: numeric | np.ndarray) -> numeric | np.ndarray:
     return .5 * np.power(x, 2) - 2 * x
 
 
-def fun2(x: numeric | np.ndarray) -> numeric | np.ndarray:
+def fun2(x: int | float | np.ndarray) -> int | float | np.ndarray:
     """
     :param x:
     :return:
@@ -139,7 +192,7 @@ def fun2(x: numeric | np.ndarray) -> numeric | np.ndarray:
     return x - 2
 
 
-def fun3(t: numeric | np.ndarray) -> numeric | np.ndarray:
+def fun3(t: int | float | np.ndarray) -> int | float | np.ndarray:
     """
     :param t:
     :return:
@@ -156,14 +209,17 @@ def fun3(t: numeric | np.ndarray) -> numeric | np.ndarray:
 def main():
     # TODO: Add functionality for 'negative' areas (Monte Carlo)
     # TODO: Add Romberg's method
-    # TODO: Add the midpoint rule
     a, b = 1, 25
     n_rects = 1000
     simp_rule = '1/3'
-    func = fun3
+    func = fun2
+    area_boole = boole(f=func, a=a, b=b)
+    area_mpont = midpoint(f=func, a=a, b=b, n_rects=n_rects)
     area_mc = mc(f=func, a=a, b=b)
     area_rect = trapezoid(f=func, a=a, b=b, n_rects=n_rects)
     area_simp = simpson(f=func, a=a, b=b, n=n_rects, rule=simp_rule)
+    print(f"Boole's rule:  {area_boole:.4f}")
+    print(f'Midpoint: {area_mpont:.4f}')
     print(f'Monte Carlo: {area_mc:.4f}')
     print(f'Rectangle: {area_rect:.4f}')
     print(f"Simpson's rule (rule {simp_rule}): {area_simp:.4f}")
