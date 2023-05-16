@@ -10,9 +10,6 @@ import matplotlib.pyplot as plt
 from typing import Callable
 from inspect import signature
 
-# For typing
-num = int | float
-
 
 def load_data(fname: str) -> np.ndarray:
     """
@@ -127,7 +124,7 @@ def fit_curve(fit_func: Callable, x: np.ndarray, y: np.ndarray,
     return _gauss_newton(func=fit_func, x=x, y=y, params=params, limit=limit)
 
 
-def linear(x: np.ndarray, a: num, b: num) -> np.ndarray:
+def linear(x: np.ndarray, a: int | float, b: int | float) -> np.ndarray:
     """
     Function for a line of form y == ax + b
     :param x: X-coordinates
@@ -138,7 +135,8 @@ def linear(x: np.ndarray, a: num, b: num) -> np.ndarray:
     return a * x + b
 
 
-def polynomial(x: np.ndarray, a: num, b: num, c: num) -> np.ndarray:
+def polynomial(x: np.ndarray, a: int | float, b: int | float,
+               c: int | float) -> np.ndarray:
     """
     :param x:
     :param a:
