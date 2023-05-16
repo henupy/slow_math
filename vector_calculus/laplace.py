@@ -8,11 +8,9 @@ import matplotlib.pyplot as plt
 from gradient import grad
 from divergence import div
 
-# For typing
-num = int | float
 
-
-def sqroot(x: num | np.ndarray, y: num | np.ndarray) -> num | np.ndarray:
+def sqroot(x: int | float | np.ndarray, y: int | float | np.ndarray) \
+        -> int | float | np.ndarray:
     """
     Example 2d function
     :param x:
@@ -22,7 +20,8 @@ def sqroot(x: num | np.ndarray, y: num | np.ndarray) -> num | np.ndarray:
     return np.sqrt(np.power(x, 2) + np.power(y, 2))
 
 
-def _fwd2(field: np.ndarray, row: int, col: int, dx: num, dy: num, axis: str) -> num:
+def _fwd2(field: np.ndarray, row: int, col: int, dx: int | float,
+          dy: int | float, axis: str) -> int | float:
     """
     Second order forward difference along the given axis
     :param field:
@@ -40,7 +39,8 @@ def _fwd2(field: np.ndarray, row: int, col: int, dx: num, dy: num, axis: str) ->
     return (field[row + 1, col] - field[row, col]) / dy
 
 
-def _cnt2(field: np.ndarray, row: int, col: int, dx: num, dy: num, axis: str) -> num:
+def _cnt2(field: np.ndarray, row: int, col: int, dx: int | float,
+          dy: int | float, axis: str) -> int | float:
     """
     Second order center difference along the given axis
     :param field:
@@ -59,7 +59,8 @@ def _cnt2(field: np.ndarray, row: int, col: int, dx: num, dy: num, axis: str) ->
     return (field[row - 1, col] - 2 * field[row, col] + field[row + 1, col]) / (dy * dy)
 
 
-def _bwd2(field: np.ndarray, row: int, col: int, dx: num, dy: num, axis: str) -> num:
+def _bwd2(field: np.ndarray, row: int, col: int, dx: int | float,
+          dy: int | float, axis: str) -> int | float:
     """
     Second order backward difference along the given axis
     :param field:
@@ -78,7 +79,7 @@ def _bwd2(field: np.ndarray, row: int, col: int, dx: num, dy: num, axis: str) ->
 
 
 
-def laplace(field: np.ndarray, dx: num, dy: num) -> np.ndarray:
+def laplace(field: np.ndarray, dx: int | float, dy: int | float) -> np.ndarray:
     """
     Laplacian of a 2d scalar field
     :param field:

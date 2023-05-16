@@ -10,9 +10,6 @@ import numpy as np
 
 from typing import Callable
 
-# For typing
-num = int | float
-
 
 def curve(s: np.ndarray) -> np.ndarray:
     """
@@ -25,7 +22,7 @@ def curve(s: np.ndarray) -> np.ndarray:
     return np.array([x, y])
 
 
-def circle(s: num | np.ndarray) -> np.ndarray:
+def circle(s: int | float | np.ndarray) -> np.ndarray:
     """
     A circle centeread around the point (2, 0) (from Khan Academy)
     :param s:
@@ -34,7 +31,7 @@ def circle(s: num | np.ndarray) -> np.ndarray:
     return np.array([np.cos(s) + 2, np.sin(s)])
 
 
-def grav_field(x: num, y: num) -> np.ndarray:
+def grav_field(x: int | float, y: int | float) -> np.ndarray:
     """
     Gravity as a vector field (from Khan Academy)
     :param x:
@@ -47,7 +44,7 @@ def grav_field(x: num, y: num) -> np.ndarray:
     return np.array([0, m * g])
 
 
-def tornado(x: num, y: num) -> np.ndarray:
+def tornado(x: int | float, y: int | float) -> np.ndarray:
     """
     Rotating vector field (from Khan Academy)
     :param x:
@@ -58,7 +55,7 @@ def tornado(x: num, y: num) -> np.ndarray:
 
 
 def line_int(s: np.ndarray, line: Callable, field: Callable,
-             eps: num = 1e-4) -> num:
+             eps: float = 1e-4) -> int | float:
     """
     Line integral in a 2d vector field
     :param s:

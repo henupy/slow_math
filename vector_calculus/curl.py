@@ -12,9 +12,6 @@ Examples are also from wikipedia: https://en.wikipedia.org/wiki/Curl_(mathematic
 import numpy as np
 import matplotlib.pyplot as plt
 
-# For typing
-num = int | float
-
 
 def khan(x: np.ndarray, y: np.ndarray) -> np.ndarray:
     """
@@ -88,8 +85,8 @@ def efield(x: np.ndarray, y: np.ndarray) -> np.ndarray:
     return field
 
 
-def _fwd_curl(field: np.ndarray, row: int, col: int, dx: num, dy: num,
-              axis: str) -> num:
+def _fwd_curl(field: np.ndarray, row: int, col: int, dx: int | float,
+              dy: int | float, axis: str) -> int | float:
     """
     Forward difference for a vector field along the given axis
     :param field:
@@ -107,8 +104,8 @@ def _fwd_curl(field: np.ndarray, row: int, col: int, dx: num, dy: num,
     return (field[row, col + 1, 1] - field[row, col, 1]) / dx
 
 
-def _cnt_curl(field: np.ndarray, row: int, col: int, dx: num, dy: num,
-              axis: str) -> num:
+def _cnt_curl(field: np.ndarray, row: int, col: int, dx: int | float,
+              dy: int | float, axis: str) -> int | float:
     """
     Center difference for a vector field along the given axis
     :param field:
@@ -126,8 +123,8 @@ def _cnt_curl(field: np.ndarray, row: int, col: int, dx: num, dy: num,
     return (field[row, col + 1, 1] - field[row, col - 1, 1]) / (2 * dx)
 
 
-def _bwd_curl(field: np.ndarray, row: int, col: int, dx: num, dy: num,
-              axis: str) -> num:
+def _bwd_curl(field: np.ndarray, row: int, col: int, dx: int | float,
+              dy: int | float, axis: str) -> int | float:
     """
     Backward difference for a vector field along the given axis
     :param field:
@@ -145,7 +142,7 @@ def _bwd_curl(field: np.ndarray, row: int, col: int, dx: num, dy: num,
     return (field[row, col, 1] - field[row, col - 1, 1]) / dx
 
 
-def curl(field: np.ndarray, dx: num, dy: num) -> np.ndarray:
+def curl(field: np.ndarray, dx: int | float, dy: int | float) -> np.ndarray:
     """
     Discrete curl of a 2d vector field
     :param field:

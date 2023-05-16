@@ -7,11 +7,9 @@ Some example fields are from Wikipedia: https://en.wikipedia.org/wiki/Gradient
 import numpy as np
 import matplotlib.pyplot as plt
 
-# For typing
-num = int | float
 
-
-def sincos(x: num | np.ndarray, y: num | np.ndarray) -> num | np.ndarray:
+def sincos(x: int | float | np.ndarray, y: int | float | np.ndarray) \
+        -> int | float | np.ndarray:
     """
     :param x:
     :param y:
@@ -20,7 +18,8 @@ def sincos(x: num | np.ndarray, y: num | np.ndarray) -> num | np.ndarray:
     return np.sin(x) + np.cos(y)
 
 
-def cos2(x: num | np.ndarray, y: num | np.ndarray) -> num | np.ndarray:
+def cos2(x: int | float | np.ndarray, y: int | float | np.ndarray) \
+        -> int | float | np.ndarray:
     """
     :param x:
     :param y:
@@ -31,7 +30,8 @@ def cos2(x: num | np.ndarray, y: num | np.ndarray) -> num | np.ndarray:
     return -np.power(xcos2 + ycos2, 2)
 
 
-def sqroot(x: num | np.ndarray, y: num | np.ndarray) -> num | np.ndarray:
+def sqroot(x: int | float | np.ndarray, y: int | float | np.ndarray) \
+        -> int | float | np.ndarray:
     """
     :param x:
     :param y:
@@ -40,7 +40,8 @@ def sqroot(x: num | np.ndarray, y: num | np.ndarray) -> num | np.ndarray:
     return np.sqrt(np.power(x, 2) + np.power(y, 2))
 
 
-def exponential(x: num | np.ndarray, y: num | np.ndarray) -> num | np.ndarray:
+def exponential(x: int | float | np.ndarray, y: int | float | np.ndarray) \
+        -> int | float | np.ndarray:
     """
     Example from Wikipedia
     :param x:
@@ -50,7 +51,8 @@ def exponential(x: num | np.ndarray, y: num | np.ndarray) -> num | np.ndarray:
     return x * np.exp(-(np.power(x, 2) + np.power(y, 2)))
 
 
-def _fwd(field: np.ndarray, row: int, col: int, dx: num, dy: num, axis: str) -> num:
+def _fwd(field: np.ndarray, row: int, col: int, dx: int | float,
+         dy: int | float, axis: str) -> int | float:
     """
     Forward difference along the given axis
     :param field:
@@ -68,7 +70,8 @@ def _fwd(field: np.ndarray, row: int, col: int, dx: num, dy: num, axis: str) -> 
     return (field[row + 1, col] - field[row, col]) / dy
 
 
-def _cnt(field: np.ndarray, row: int, col: int, dx: num, dy: num, axis: str) -> num:
+def _cnt(field: np.ndarray, row: int, col: int, dx: int | float,
+         dy: int | float, axis: str) -> int | float:
     """
     Center difference along the given axis
     :param field:
@@ -86,7 +89,8 @@ def _cnt(field: np.ndarray, row: int, col: int, dx: num, dy: num, axis: str) -> 
     return (field[row + 1, col] - field[row - 1, col]) / (2 * dy)
 
 
-def _bwd(field: np.ndarray, row: int, col: int, dx: num, dy: num, axis: str) -> num:
+def _bwd(field: np.ndarray, row: int, col: int, dx: int | float,
+         dy: int | float, axis: str) -> int | float:
     """
     Backward difference along the given axis
     :param field:
@@ -104,7 +108,7 @@ def _bwd(field: np.ndarray, row: int, col: int, dx: num, dy: num, axis: str) -> 
     return (field[row, col] - field[row - 1, col]) / dy
 
 
-def grad(field: np.ndarray, dx: num, dy: num) -> np.ndarray:
+def grad(field: np.ndarray, dx: int | float, dy: int | float) -> np.ndarray:
     """
     Discrete gradient of a 2d scalar field
     :param field:

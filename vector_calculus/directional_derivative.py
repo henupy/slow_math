@@ -10,11 +10,9 @@ import matplotlib.pyplot as plt
 from gradient import grad
 from typing import Callable
 
-# For typing
-num = int | float
 
-
-def sqroot(x: num | np.ndarray, y: num | np.ndarray) -> num | np.ndarray:
+def sqroot(x: int | float | np.ndarray, y: int | float | np.ndarray) \
+        -> int | float | np.ndarray:
     """
     Example 2d function
     :param x:
@@ -24,7 +22,8 @@ def sqroot(x: num | np.ndarray, y: num | np.ndarray) -> num | np.ndarray:
     return np.sqrt(np.power(x, 2) + np.power(y, 2))
 
 
-def x2y2(x: num | np.ndarray, y: num | np.ndarray) -> num | np.ndarray:
+def x2y2(x: int | float | np.ndarray, y: int | float | np.ndarray) \
+        -> int | float | np.ndarray:
     """
     Example 2d function from Wikipedia
     :param x:
@@ -34,7 +33,8 @@ def x2y2(x: num | np.ndarray, y: num | np.ndarray) -> num | np.ndarray:
     return np.power(x, 2) + np.power(y, 2)
 
 
-def dirdev(x: num, y: num, fun: Callable, v: np.ndarray, eps: num = 1e-4) -> np.ndarray:
+def dirdev(x: int | float, y: int | float, fun: Callable, v: np.ndarray,
+           eps: float = 1e-4) -> np.ndarray:
     """
     Directional derivative of the given 2d function at the location (x, y)
     in the direction of v
@@ -52,7 +52,8 @@ def dirdev(x: num, y: num, fun: Callable, v: np.ndarray, eps: num = 1e-4) -> np.
     return (fun(x1, y1) - fun(x0, y0)) / (2 * eps)
 
 
-def visualise(x: num, y: num, fun: Callable, v: np.ndarray, eps: num = 1e-4) -> None:
+def visualise(x: int | float, y: int | float, fun: Callable, v: np.ndarray,
+              eps: float = 1e-4) -> None:
     """
     Plots the scalar field, the gradient vector at (x, y), and the vector v
     scaled by the directional derivative at (x, y) in the direction of v
@@ -66,6 +67,7 @@ def visualise(x: num, y: num, fun: Callable, v: np.ndarray, eps: num = 1e-4) -> 
     pad = 5
     xa = np.array([x])
     ya = np.array([y])
+    # TODO: check the epsilon thing
     nabla = grad(xa, ya, fun, eps)[0][0]
     v_scaled = v / np.linalg.norm(v) * dirdev(x, y, fun, v, eps)
     scaler = np.linalg.norm(nabla)
