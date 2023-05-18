@@ -29,7 +29,7 @@ def _factorial(n: int) -> int:
 def _validate_matrix(mat: matrix) -> None:
     """
     Raises an error if the matrix is incorrectly defined
-    :param mat: Matrix where each nested list corresponds to a row
+    :param mat: Matrix of any shape
     :return:
     """
     if not mat or not mat[0]:
@@ -42,7 +42,7 @@ def _validate_matrix(mat: matrix) -> None:
 def determine_dimensions(mat: matrix) -> tuple:
     """
     Finds out the dimensions of a matrix
-    :param mat: Matrix where each nested list corresponds to a row
+    :param mat: Matrix of any shape
     :return: tuple of (rows, columns)
     """
     _validate_matrix(mat=mat)
@@ -57,7 +57,7 @@ def determine_dimensions(mat: matrix) -> tuple:
 def scalar_mult(mat: matrix, mul: int | float) -> matrix:
     """
     Scalar multiplication of a matrix
-    :param mat: Matrix where each nested list corresponds to a row
+    :param mat: Matrix of any shape
     :param mul: Multiplicator with which the matrix's elements are
         multiplied. Must be a number.
     :return: Matrix of same shape as the param, with the elements
@@ -79,7 +79,7 @@ def scalar_mult(mat: matrix, mul: int | float) -> matrix:
 def transpose(mat: matrix) -> matrix:
     """
     Transposes the given matrix
-    :param mat: Matrix where each nested list corresponds to a row
+    :param mat: Matrix to transpose
     :return:
     """
     _validate_matrix(mat=mat)
@@ -100,8 +100,8 @@ def transpose(mat: matrix) -> matrix:
 def mat_sum(mat1: matrix, mat2: matrix) -> matrix:
     """
     Returns the sum matrix of two matrices
-    :param mat1: Matrix where each nested list corresponds to a row
-    :param mat2: Matrix where each nested list corresponds to a row
+    :param mat1: Matrix of any shape (but same as mat2)
+    :param mat2: Matrix of any shape (but same as mat1)
     :return: Sum matrix, same shape as the inputs
     """
     _validate_matrix(mat=mat1)
@@ -121,7 +121,7 @@ def mat_sum(mat1: matrix, mat2: matrix) -> matrix:
 def _flatten(mat: matrix) -> list:
     """
     Flattens the matrix
-    :param mat: Matrix where each nested list corresponds to a row
+    :param mat: Matrix/vector that has multiple rows
     :return: A flattened matrix that has the elements of the nested
     matrix
     """
@@ -134,8 +134,8 @@ def _flatten(mat: matrix) -> list:
 def dot_prod(v1: matrix, v2: matrix) -> int | float:
     """
     Dot product of two vectors
-    :param v1: Vector, where the nested lists are the rows
-    :param v2: Vector, where the nested lists are the rows
+    :param v1: A row or a column vector
+    :param v2: A row or a column vector
     :return:
     """
     _validate_matrix(mat=v1)
@@ -146,21 +146,22 @@ def dot_prod(v1: matrix, v2: matrix) -> int | float:
         raise exs.DimensionError('v1 must be either a column or a row vector')
     if 1 not in dim2:
         raise exs.DimensionError('v2 must be either a column or a row vector')
+    # Flatten both vectors to assert that they have the same shape
     v1 = _flatten(mat=v1)
     v2 = _flatten(mat=v2)
     if len(v1) != len(v2):
         raise exs.DimensionError('Vectors must have same length')
-    summa = 0
+    prod = 0
     for i, j in zip(v1, v2):
-        summa += i * j
-    return summa
+        prod += i * j
+    return prod
 
 
 def mat_mul(mat1: matrix, mat2: matrix) -> matrix:
     """
     The common matrix multiplication
-    :param mat1: Matrix where each nested list corresponds to a row
-    :param mat2: Matrix where each nested list corresponds to a row
+    :param mat1: Matrix of any shape (that is valid for multiplication)
+    :param mat2: Matrix of any shape (that is valid for multiplication)
     :return:
     """
     _validate_matrix(mat=mat1)
@@ -202,7 +203,7 @@ def identity_mat(n: int) -> matrix:
 def mat_pow(mat: matrix, n: int) -> matrix:
     """
     Raises the given matrix to the power of n
-    :param mat: Matrix where each nested list corresponds to a row
+    :param mat: A square matrix
     :param n: An integer power to which raise the matrix (must be positive)
     :return:
     """
@@ -229,8 +230,8 @@ def mat_pow(mat: matrix, n: int) -> matrix:
 def _relative_diff(mat1: matrix, mat2: matrix) -> matrix:
     """
     Calculates the relative difference of two matrices elementwise
-    :param mat1: Matrix where each nested list corresponds to a row
-    :param mat2: Matrix where each nested list corresponds to a row
+    :param mat1: Matrix of any shape
+    :param mat2: Matrix of any shape
     :return: A matrix of the same shape as the matrices passed as params,
         with each element containing the relative difference of the two matrices'
         elements at the corresponding locations.
@@ -259,12 +260,12 @@ def _relative_diff(mat1: matrix, mat2: matrix) -> matrix:
 def _norm(mat: matrix) -> float:
     """
     Calculates the value of the norm of the (flatten) matrix
-    :param mat:
+    :param mat: Matrix of any shape
     :return:
     """
     _validate_matrix(mat=mat)
     flat = _flatten(mat=mat)
-    val = sum(i * i for i in flat) ** 0.5
+    val = sum(i * i for i in flat) ** .5
     return val
 
 
@@ -275,9 +276,12 @@ def mat_exp(mat: matrix, rtol: int | float = 1e-9,
     matrix. The solution is computed using the matrix power series.
     The solution is deemed to be converged when the relative error is
     below the given tolerance.
-    :param mat:
-    :param rtol:
-    :param iter_limit:
+    :param mat: A square matrix
+    :param rtol: The tolerance for the relative error. Determines how
+    accurate the result will be. Defaults to 1e-9.
+    :param iter_limit: A limit for the amount of iterations to do in
+    case the result would not converge for some reason. Prevents the
+    iteration from running infinitely. Defaults to 1000.
     :return:
     """
     # Check that the matrix is valid and has valid dimensions for exponentiation
@@ -287,7 +291,7 @@ def mat_exp(mat: matrix, rtol: int | float = 1e-9,
         msg = f'Matrix must be a square matrix. Now got {dim[0]}x{dim[1]}'
         raise exs.DimensionError(msg)
     error, n = 1, 0
-    # Initialise two result matrices
+    # Initialise two result matrices to keep track of the iteration
     new_res = [[0] * dim[0] for _ in range(dim[0])]
     old_res = deepcopy(new_res)
     while error > rtol and n < iter_limit:
