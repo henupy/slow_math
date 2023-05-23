@@ -9,14 +9,15 @@ import exceptions as exs
 
 class Matrix:
     """
-    A Matrix class that should implement the main functions of a matrix
+    A Matrix class that should implement the main functions of a matrix.
+    Works only for 2d matrices.
     """
-    def __init__(self, data: list | list[list[int | float]]) -> None:
+    def __init__(self, data: list | list[list]) -> None:
         """
         :param data: Numerical data as a list or a nested list. Used
         to construct the matrix.
         """
-        # Check that the data only contains numbers
+        # Check that the data only contains numbers and is not empty
         self._validate_data(data=data)
         self.data = data
         # The matrix is in essence validated in this step as well
@@ -25,16 +26,26 @@ class Matrix:
     @staticmethod
     def _validate_data(data) -> None:
         """
-        Raises an error if non-numerical data is found
+        Raises an error if invalid data is found
         :param data:
         :return:
         """
+        if not data or not data[0]:
+            msg = 'No data provided for the matrix.'
+            raise exs.EmptyMatrixError(msg)
+
         msg = 'Data must be only numerical.'
         if not isinstance(data[0], list):
             for val in data:
                 if not isinstance(val, (int, float)):
                     raise exs.InvalidDataError(msg)
+            return
+        # Any empty rows are not allowed
+        for row in data:
+            if not row:
+                raise exs.InvalidRowError('One of the rows was empty')
 
+        # Non-numerical data is not allowed
         for row in data:
             for val in row:
                 if not isinstance(val, (int, float)):
@@ -45,11 +56,14 @@ class Matrix:
         Finds out the dimensions of a matrix
         :return: tuple of (rows, columns)
         """
-        if not self.data or not self.data[0]:
-            msg = 'No data provided for the matrix.'
-            raise exs.EmptyMatrixError(msg)
+        # Check if data is of form [1, 2, 3]
         if not isinstance(self.data[0], list):
-            return 1, len(self.data)
+            self.data = [self.data]
+            return 1, len(self.data[0])
+        # Check if data is of form [[1, 2, 3]]
+        flat = self._flatten(v=self.data)
+        if self.data[0] == flat:
+            return 1, len(self.data[0])
         rows = len(self.data)
         cols = len(self.data[0])
         if any(len(row) != cols for row in self.data):
@@ -66,7 +80,7 @@ class Matrix:
         r, c = self.shape
         if r == 1:
             trans_val = []
-            for num in self.data:
+            for num in self.data[0]:
                 trans_val.append([num])
             return Matrix(data=trans_val)
         trans_val = [[0] * r for _ in range(c)]
@@ -142,7 +156,7 @@ class Matrix:
         if isinstance(v1[0], list):
             v1 = self._flatten(v=v1)
         if isinstance(v2[0], list):
-            v1 = self._flatten(v=v2)
+            v2 = self._flatten(v=v2)
         if len(v1) != len(v2):
             raise exs.DimensionError('Vectors must have same length')
         prod = 0
@@ -246,6 +260,22 @@ class Matrix:
         for _ in range(power - 1):
             res = self @ res
         return res
+
+    def __eq__(self, other: Matrix) -> bool:
+        """
+        Check if two matrices are equal
+        :param other:
+        :return:
+        """
+        # Quick check using the shapes
+        if self.shape != other.shape:
+            return False
+        for r1, r2 in zip(self.data, other.data):
+            for v1, v2 in zip(r1, r2):
+                if v1 != v2:
+                    return False
+
+        return True
 
     def __str__(self) -> str:
         """
