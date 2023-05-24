@@ -281,6 +281,24 @@ class TestMatrix(unittest.TestCase):
         expected3 = matrix.Matrix(data=expected3)
         self.assertTrue(_almost_equal(mat1=res3, mat2=expected3, eps=epsilon))
 
+    def test_random(self) -> None:
+        """
+        Tests for generating the random matrix. Mainly to verify
+        that the matrix has the right shape
+        :return:
+        """
+        s1 = (2, 1)
+        mat1 = matrix.rand(shape=s1)
+        self.assertTupleEqual(mat1.shape, s1)
+
+        s2 = (1, 2)
+        mat2 = matrix.rand(shape=s2)
+        self.assertTupleEqual(mat2.shape, s2)
+
+        s3 = (5, 5)
+        mat3 = matrix.rand(shape=s3)
+        self.assertTupleEqual(mat3.shape, s3)
+
 def main() -> None:
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestMatrix))

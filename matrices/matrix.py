@@ -4,6 +4,7 @@ File for a Matrix object
 
 from __future__ import annotations
 
+import random
 import exceptions as exs
 
 
@@ -328,6 +329,18 @@ def ones(shape: tuple) -> Matrix:
     """
     r, c = shape
     return Matrix(data=[[1] * c for _ in range(r)])
+
+
+def rand(shape: tuple) -> Matrix:
+    """
+    Returns a matrix of the given shape filled with random values
+    in the range [0, 1)
+    :param shape:
+    :return:
+    """
+    r, c = shape
+    nums = [[random.random() for _ in range(c)] for _ in range(r)]
+    return Matrix(data=nums)
 
 
 def _relative_diff(mat1: Matrix, mat2: Matrix) -> Matrix:
