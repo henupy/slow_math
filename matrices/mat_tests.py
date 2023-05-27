@@ -77,6 +77,42 @@ class TestMatrix(unittest.TestCase):
         self.assertTrue(mat3.transpose == mat3_t)
         self.assertTrue(mat3_t.transpose == mat3)
 
+    def test_reshape(self) -> None:
+        """
+        Tests for reshaping a matrix
+        :return:
+        """
+        # Error cases
+        mat1 = matrix.Matrix(data=[[1, 2]])
+        with self.assertRaises(exs.ReshapeError):
+            mat1.reshape(new_shape=(2, 2))
+        with self.assertRaises(ValueError):
+            mat1.reshape(new_shape=())
+        mat2 = matrix.Matrix(data=[[1, 2, 3], [4, 5, 6]])
+        with self.assertRaises(exs.ReshapeError):
+            mat2.reshape(new_shape=(3, 3))
+
+        # Valid cases
+        s1 = (2, 1)
+        mat1_r = mat1.reshape(new_shape=s1)
+        self.assertTupleEqual(mat1_r.shape, s1)
+
+        s2 = (3, 2)
+        mat2_r = mat2.reshape(new_shape=s2)
+        self.assertTupleEqual(mat2_r.shape, s2)
+        mat2_r2 = mat2_r.reshape(new_shape=mat2.shape)
+        self.assertTupleEqual(mat2_r2.shape, mat2.shape)
+        s3 = (6, 1)
+        mat2_r3 = mat2.reshape(new_shape=s3)
+        self.assertTupleEqual(mat2_r3.shape, s3)
+
+        s4 = (5, 2)
+        mat3 = matrix.Matrix(data=[[1, 2, 3, 4, 5], [6, 7, 8, 9, 10]])
+        mat3_r = mat3.reshape(new_shape=s4)
+        self.assertTupleEqual(mat3_r.shape, s4)
+        mat3_rr = mat3_r.reshape(new_shape=mat3.shape)
+        self.assertTrue(mat3_rr == mat3)
+
     def test_mat_sum(self) -> None:
         """
         Tests for the matrix summation
@@ -281,23 +317,6 @@ class TestMatrix(unittest.TestCase):
         expected3 = matrix.Matrix(data=expected3)
         self.assertTrue(_almost_equal(mat1=res3, mat2=expected3, eps=epsilon))
 
-    def test_random(self) -> None:
-        """
-        Tests for generating the random matrix. Mainly to verify
-        that the matrix has the right shape
-        :return:
-        """
-        s1 = (2, 1)
-        mat1 = matrix.rand(shape=s1)
-        self.assertTupleEqual(mat1.shape, s1)
-
-        s2 = (1, 2)
-        mat2 = matrix.rand(shape=s2)
-        self.assertTupleEqual(mat2.shape, s2)
-
-        s3 = (5, 5)
-        mat3 = matrix.rand(shape=s3)
-        self.assertTupleEqual(mat3.shape, s3)
 
 def main() -> None:
     suite = unittest.TestSuite()

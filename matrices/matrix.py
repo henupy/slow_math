@@ -91,6 +91,28 @@ class Matrix:
 
         return Matrix(data=trans_val)
 
+    def reshape(self, new_shape: tuple) -> Matrix:
+        """
+        Reshapes the current matrix into the new given shape
+        :param new_shape:
+        :return:
+        """
+        r, c = self.shape
+        new_r, new_c = new_shape
+        if r * c != new_r * new_c:
+            msg = f'Cannot reshape the matrix to the new given shape. The matrix ' \
+                  f'has {r * c} elements while the new shape has {new_r * new_c}.'
+            raise exs.ReshapeError(msg)
+        new = [[0] * new_c for _ in range(new_r)]
+        old = self._flatten(v=self.data)
+        ind = 0
+        for j in range(new_r):
+            for i in range(new_c):
+                new[j][i] = old[ind]
+                ind += 1
+
+        return Matrix(data=new)
+
     def norm(self) -> float:
         """
         Calculates the value of the norm of the (flatten) matrix
