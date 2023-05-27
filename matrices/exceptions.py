@@ -33,3 +33,10 @@ class InvalidMultiplierError(Exception):
     Exception for the case that a non-numerical multiplier is given
     in the scalar multiplication of a matrix
     """
+
+
+class ReshapeError(Exception):
+    """
+    Exception for the case that the matrix can't be reshaped to the
+    given shape
+    """
