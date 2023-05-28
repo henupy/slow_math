@@ -4,6 +4,7 @@ File for a Matrix object
 
 from __future__ import annotations
 
+import math
 import random
 import exceptions as exs
 
@@ -404,6 +405,20 @@ def _factorial(n: int) -> int:
     for i in range(1, n + 1):
         prod *= i
     return prod
+
+
+def elem_exp(mat: Matrix) -> Matrix:
+    """
+    e to the power of each element of the matrix
+    :param mat:
+    :return:
+    """
+    res = [[0] * mat.shape[1] for _ in range(mat.shape[0])]
+    for j, row in enumerate(mat.data):
+        for i, val in enumerate(row):
+            res[j][i] = math.exp(val)
+
+    return Matrix(data=res)
 
 
 def mat_exp(mat: Matrix, rtol: int | float = 1e-9,
