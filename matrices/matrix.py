@@ -123,10 +123,68 @@ class Matrix:
         val = sum(i * i for i in flat) ** .5
         return val
 
-    def _scalar_mul(self, mul: int | float) -> Matrix:
+    def _scalar_sum(self, other: int | float) -> Matrix:
+        """
+        :param other:
+        :return:
+        """
+        r, c = self.shape
+        sum_vals = [[0] * c for _ in range(r)]
+        for j, row in enumerate(self.data):
+            for i, val in enumerate(row):
+                sum_vals[j][i] = val + other
+
+        return Matrix(data=sum_vals)
+
+    def _elem_wise_sum(self, other: Matrix) -> Matrix:
+        """
+        :param other:
+        :return:
+        """
+        if self.shape != other.shape:
+            msg = 'Matrices must have same shape.'
+            raise exs.DimensionError(msg)
+        # Initialise the values for the new matrix
+        sum_vals = [[0] * self.shape[1] for _ in range(self.shape[0])]
+        for j, (row1, row2) in enumerate(zip(self.data, other.data)):
+            for i, (v1, v2) in enumerate(zip(row1, row2)):
+                sum_vals[j][i] = v1 + v2
+
+        return Matrix(data=sum_vals)
+
+    def _scalar_sub(self, other: int | float) -> Matrix:
+        """
+        :param other:
+        :return:
+        """
+        r, c = self.shape
+        sum_vals = [[0] * c for _ in range(r)]
+        for j, row in enumerate(self.data):
+            for i, val in enumerate(row):
+                sum_vals[j][i] = val - other
+
+        return Matrix(data=sum_vals)
+
+    def _elem_wise_sub(self, other: Matrix) -> Matrix:
+        """
+        :param other:
+        :return:
+        """
+        if self.shape != other.shape:
+            msg = 'Matrices must have same shape.'
+            raise exs.DimensionError(msg)
+        # Initialise the values for the new matrix
+        sum_vals = [[0] * self.shape[1] for _ in range(self.shape[0])]
+        for j, (row1, row2) in enumerate(zip(self.data, other.data)):
+            for i, (v1, v2) in enumerate(zip(row1, row2)):
+                sum_vals[j][i] = v1 - v2
+
+        return Matrix(data=sum_vals)
+
+    def _scalar_mul(self, other: int | float) -> Matrix:
         """
         Matrix multiplication by a scalar
-        :param mul:
+        :param other:
         :return:
         """
         # Initialise a new matrix (or its values)
@@ -134,7 +192,7 @@ class Matrix:
         mult_vals = [[0] * c for _ in range(r)]
         for j, row in enumerate(self.data):
             for i, val in enumerate(row):
-                mult_vals[j][i] = val * mul
+                mult_vals[j][i] = val * other
 
         return Matrix(data=mult_vals)
 
@@ -188,39 +246,48 @@ class Matrix:
             prod += i * j
         return prod
 
-    def __add__(self, other: Matrix) -> Matrix:
+    def __add__(self, other: int | float | Matrix) -> Matrix:
         """
         Elementwise addition of two matrices
         :param other: A matrix that has the same shape as the matrix
         that this matrix is added to
         :return:
         """
-        if self.shape != other.shape:
-            msg = 'Matrices must have same shape.'
-            raise exs.DimensionError(msg)
-        sum_val = [[0] * self.shape[1] for _ in range(self.shape[0])]
-        for j, (row1, row2) in enumerate(zip(self.data, other.data)):
-            for i, (v1, v2) in enumerate(zip(row1, row2)):
-                sum_val[j][i] = v1 + v2
+        if not isinstance(other, (int, float, Matrix)):
+            msg = 'The summand must be a number or another Matrix.'
+            raise exs.AdditionError(msg)
+        if isinstance(other, (int, float)):
+            return self._scalar_sum(other=other)
+        return self._elem_wise_sum(other=other)
 
-        return Matrix(data=sum_val)
+    def __radd__(self, other: int | float) -> Matrix:
+        """
+        :param other:
+        :return:
+        """
+        return self.__add__(other=other)
 
-    def __sub__(self, other: Matrix) -> Matrix:
+    def __sub__(self, other: int | float | Matrix) -> Matrix:
         """
         Elementwise substraction of two matrices
         :param other: A matrix that has the same shape as the matrix
         that this matrix is substracted from
         :return:
         """
-        if self.shape != other.shape:
-            msg = 'Matrices must have same shape.'
-            raise exs.DimensionError(msg)
-        diff_val = [[0] * self.shape[1] for _ in range(self.shape[0])]
-        for j, (row1, row2) in enumerate(zip(self.data, other.data)):
-            for i, (v1, v2) in enumerate(zip(row1, row2)):
-                diff_val[j][i] = v1 - v2
+        if not isinstance(other, (int, float, Matrix)):
+            msg = 'The other part of the substraction must be a number or ' \
+                  'another Matrix.'
+            raise exs.SubstractionError(msg)
+        if isinstance(other, (int, float)):
+            return self._scalar_sub(other=other)
+        return self._elem_wise_sub(other=other)
 
-        return Matrix(data=diff_val)
+    def __rsub__(self, other: int | float) -> Matrix:
+        """
+        :param other:
+        :return:
+        """
+        return self.__sub__(other=other)
 
     def __mul__(self, other: int | float | Matrix) -> Matrix:
         """
@@ -231,11 +298,23 @@ class Matrix:
         :return:
         """
         if not isinstance(other, (int, float, Matrix)):
-            msg = 'The multiplier must be a number.'
-            raise exs.InvalidMultiplierError(msg)
+            msg = 'The multiplier must be a number or another Matrix.'
+            raise exs.MultiplicationError(msg)
         if isinstance(other, (int, float)):
-            return self._scalar_mul(mul=other)
+            return self._scalar_mul(other=other)
         return self._elem_wise_mul(other=other)
+
+    def __rtruediv__(self, other: int | float) -> Matrix:
+        """
+        :param other:
+        :return:
+        """
+        res = [[0] * self.shape[1] for _ in range(self.shape[0])]
+        for j, row in enumerate(self.data):
+            for i, val in enumerate(row):
+                res[j][i] = other / val
+
+        return Matrix(data=res)
 
     def __matmul__(self, other: Matrix) -> Matrix:
         """
@@ -284,6 +363,17 @@ class Matrix:
         for _ in range(power - 1):
             res = self @ res
         return res
+
+    def __neg__(self) -> Matrix:
+        """
+        :return:
+        """
+        res = [[0] * self.shape[1] for _ in range(self.shape[0])]
+        for j, row in enumerate(self.data):
+            for i, val in enumerate(row):
+                res[j][i] = -val
+
+        return Matrix(data=res)
 
     def __eq__(self, other: Matrix) -> bool:
         """
@@ -413,7 +503,7 @@ def elem_exp(mat: Matrix) -> Matrix:
     :param mat:
     :return:
     """
-    res = [[0] * mat.shape[1] for _ in range(mat.shape[0])]
+    res = [[0.] * mat.shape[1] for _ in range(mat.shape[0])]
     for j, row in enumerate(mat.data):
         for i, val in enumerate(row):
             res[j][i] = math.exp(val)

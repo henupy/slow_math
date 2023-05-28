@@ -3,6 +3,7 @@ Unittests for the matrix operations
 """
 
 import math
+import random
 import unittest
 import matrix as mx
 import exceptions as exs
@@ -115,7 +116,8 @@ class TestMatrix(unittest.TestCase):
 
     def test_mat_sum(self) -> None:
         """
-        Tests for the matrix summation
+        Tests for addition of two matrices and for the
+        addition of a scalar number and a matrix
         :return:
         """
         mat1 = mx.Matrix(data=[[1, 2], [3, 4]])
@@ -125,33 +127,104 @@ class TestMatrix(unittest.TestCase):
 
         mat3 = mx.Matrix(data=[[1, 2, 3]])
         mat4 = mx.Matrix(data=[[4, 5, 6]])
-        sum1 = mx.Matrix(data=[[5, 7, 9]])
-        self.assertTrue(mat3 + mat4 == sum1)
-        self.assertTrue(mat4 + mat3 == sum1)
+        res1 = mx.Matrix(data=[[5, 7, 9]])
+        self.assertTrue(mat3 + mat4 == res1)
+        self.assertTrue(mat4 + mat3 == res1)
 
         mat3_t = mx.Matrix(data=[[1], [2], [3]])
         mat4_t = mx.Matrix(data=[[4], [5], [6]])
-        sum1_t = mx.Matrix(data=[[5], [7], [9]])
-        self.assertTrue(mat3_t + mat4_t == sum1_t)
-        self.assertTrue(mat3_t + mat4_t == sum1_t)
+        res1_t = mx.Matrix(data=[[5], [7], [9]])
+        self.assertTrue(mat3_t + mat4_t == res1_t)
+        self.assertTrue(mat3_t + mat4_t == res1_t)
 
         mat5 = mx.Matrix(data=[[1, 2], [3, 4]])
         mat6 = mx.Matrix(data=[[5, 6], [7, 8]])
-        sum2 = mx.Matrix(data=[[6, 8], [10, 12]])
-        self.assertTrue(mat5 + mat6 == sum2)
-        self.assertTrue(mat6 + mat5 == sum2)
+        res2 = mx.Matrix(data=[[6, 8], [10, 12]])
+        self.assertTrue(mat5 + mat6 == res2)
+        self.assertTrue(mat6 + mat5 == res2)
 
         mat7 = mx.Matrix(data=[[1, 2, 3], [4, 5, 6]])
         mat8 = mx.Matrix(data=[[7, 8, 9], [10, 11, 12]])
-        sum3 = mx.Matrix(data=[[8, 10, 12], [14, 16, 18]])
-        self.assertTrue(mat7 + mat8 == sum3)
-        self.assertTrue(mat8 + mat7 == sum3)
+        res3 = mx.Matrix(data=[[8, 10, 12], [14, 16, 18]])
+        self.assertTrue(mat7 + mat8 == res3)
+        self.assertTrue(mat8 + mat7 == res3)
 
         mat9 = mx.Matrix(data=[[1, 2], [3, 4], [5, 6]])
         mat10 = mx.Matrix(data=[[7, 8], [9, 10], [11, 12]])
-        sum4 = mx.Matrix(data=[[8, 10], [12, 14], [16, 18]])
-        self.assertTrue(mat9 + mat10 == sum4)
-        self.assertTrue(mat10 + mat9 == sum4)
+        res4 = mx.Matrix(data=[[8, 10], [12, 14], [16, 18]])
+        self.assertTrue(mat9 + mat10 == res4)
+        self.assertTrue(mat10 + mat9 == res4)
+
+        num = 5
+        mat11 = mx.Matrix(data=[1, 2])
+        res5 = mx.Matrix(data=[[6, 7]])
+        self.assertTrue(mat11 + num == res5)
+
+        mat12 = mx.Matrix(data=[[1], [2]])
+        res5_t = res5.transpose
+        self.assertTrue(mat12 + num == res5_t)
+
+        mat13 = mx.Matrix(data=[[1, 2, 3], [4, 5, 6]])
+        res6 = mx.Matrix(data=[[6, 7, 8], [9, 10, 11]])
+        self.assertTrue(num + mat13 == res6)
+
+    def test_mat_sub(self) -> None:
+        """
+        Tests for substraction of two matrices
+        :return:
+        """
+        mat1 = mx.Matrix(data=[[1, 2], [3, 4]])
+        mat2 = mx.Matrix(data=[[5, 6, 7], [8, 9, 10]])
+        with self.assertRaises(exs.DimensionError):
+            _ = mat1 - mat2
+
+        mat3 = mx.Matrix(data=[[1, 2, 3]])
+        mat4 = mx.Matrix(data=[[4, 5, 6]])
+        res1 = mx.Matrix(data=[[-3, -3, -3]])
+        res2 = mx.Matrix(data=[[3, 3, 3]])
+        self.assertTrue(mat3 - mat4 == res1)
+        self.assertTrue(mat4 - mat3 == res2)
+
+        mat3_t = mat3.transpose
+        mat4_t = mat4.transpose
+        res1_t = res1.transpose
+        res2_t = res2.transpose
+        self.assertTrue(mat3_t - mat4_t == res1_t)
+        self.assertTrue(mat4_t - mat3_t == res2_t)
+
+        mat5 = mx.Matrix(data=[[1, 2], [3, 4]])
+        mat6 = mx.Matrix(data=[[5, 6], [7, 8]])
+        res3 = mx.Matrix(data=[[-4, -4], [-4, -4]])
+        res4 = mx.Matrix(data=[[4, 4], [4, 4]])
+        self.assertTrue(mat5 - mat6 == res3)
+        self.assertTrue(mat6 - mat5 == res4)
+
+        mat7 = mx.Matrix(data=[[1, 2, 3], [4, 5, 6]])
+        mat8 = mx.Matrix(data=[[7, 8, 9], [10, 11, 12]])
+        res5 = mx.Matrix(data=[[-6, -6, -6], [-6, -6, -6]])
+        res6 = mx.Matrix(data=[[6, 6, 6], [6, 6, 6]])
+        self.assertTrue(mat7 - mat8 == res5)
+        self.assertTrue(mat8 - mat7 == res6)
+
+        mat9 = mx.Matrix(data=[[1, 2], [3, 4], [5, 6]])
+        mat10 = mx.Matrix(data=[[7, 8], [9, 10], [11, 12]])
+        res7 = mx.Matrix(data=[[-6, -6], [-6, -6], [-6, -6]])
+        res8 = mx.Matrix(data=[[6, 6], [6, 6], [6, 6]])
+        self.assertTrue(mat9 - mat10 == res7)
+        self.assertTrue(mat10 - mat9 == res8)
+
+        num = 5
+        mat11 = mx.Matrix(data=[1, 2])
+        res5 = mx.Matrix(data=[[-4, -3]])
+        self.assertTrue(mat11 - num == res5)
+
+        mat12 = mx.Matrix(data=[[1], [2]])
+        res5_t = res5.transpose
+        self.assertTrue(mat12 - num == res5_t)
+
+        mat13 = mx.Matrix(data=[[1, 2, 3], [4, 5, 6]])
+        res6 = mx.Matrix(data=[[-4, -3, -2], [-1, 0, 1]])
+        self.assertTrue(num - mat13 == res6)
 
     def test_scalar_mult(self) -> None:
         """
@@ -337,6 +410,24 @@ class TestMatrix(unittest.TestCase):
         expected3 = mx.Matrix(data=expected3)
         self.assertTrue(_almost_equal(mat1=res3, mat2=expected3, eps=epsilon))
 
+    def test_neq(self) -> None:
+        """
+        Tests for the negation of a matrix
+        :return:
+        """
+        mat1 = mx.Matrix(data=[1, 2])
+        mat2 = mx.Matrix(data=[-1, -2])
+        self.assertTrue(-mat1 == mat2)
+
+        mat3 = mx.Matrix(data=[[1], [2]])
+        mat4 = mx.Matrix(data=[[-1], [-2]])
+        self.assertTrue(mat3 == -mat4)
+
+        mat4 = mx.Matrix(data=[[1, 2, 3], [4, 5, 6]])
+        mat5 = mx.Matrix(data=[[7, 8, 9], [10, 11, 12]])
+        diff = mat5 - mat4
+        self.assertTrue(-mat4 + mat5 == diff)
+        self.assertTrue(-mat4 - -mat5 == -mat4 + mat5)
 
 def main() -> None:
     suite = unittest.TestSuite()
