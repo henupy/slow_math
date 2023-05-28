@@ -2,6 +2,7 @@
 File for custom exception(s)
 """
 
+
 class DimensionError(Exception):
     """
     Exception for a situation where the matrix dimensions
@@ -22,16 +23,32 @@ class InvalidRowError(Exception):
     matrix is of different length than the others
     """
 
+
 class InvalidDataError(Exception):
     """
     Exception for the case where non-numerical data is found in the
     data used to construct the matrix
     """
 
-class InvalidMultiplierError(Exception):
+
+class AdditionError(Exception):
     """
-    Exception for the case that a non-numerical multiplier is given
-    in the scalar multiplication of a matrix
+    Exception for the case that an invalid data type is given
+    in the scalar or elementwise summation of a matrix
+    """
+
+
+class SubstractionError(Exception):
+    """
+    Exception for the case that an invalid data type is given
+    in the scalar or elementwise substraction of a matrix
+    """
+
+
+class MultiplicationError(Exception):
+    """
+    Exception for the case that an invalid data type is given
+    in the scalar or elementwise multiplication of a matrix
     """
 
 
