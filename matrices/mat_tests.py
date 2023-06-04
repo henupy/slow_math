@@ -428,6 +428,75 @@ class TestMatrix(unittest.TestCase):
         self.assertTrue(-mat4 + mat5 == diff)
         self.assertTrue(-mat4 - -mat5 == -mat4 + mat5)
 
+    def test_max(self) -> None:
+        """
+        Simple tests for the function that finds the maximum value in the matrix
+        :return:
+        """
+        mat1 = mx.Matrix(data=[1, 2, 3])
+        max1 = 3
+        self.assertEqual(mx.maxm(mat=mat1), max1)
+
+        mat2 = mx.Matrix(data=[[1, 2, 3], [6, 5, 4]])
+        max2 = 6
+        self.assertEqual(mx.maxm(mat=mat2), max2)
+
+        mat3 = -mat2
+        max3 = -1
+        self.assertEqual(mx.maxm(mat=mat3), max3)
+
+
+    def test_min(self) -> None:
+        """
+        Simple tests for the function that finds the minimum value in the matrix
+        :return:
+        """
+        mat1 = mx.Matrix(data=[1, 2, 3])
+        max1 = 1
+        self.assertEqual(mx.minm(mat=mat1), max1)
+
+        mat2 = mx.Matrix(data=[[1, 2, 3], [6, 5, 4]])
+        max2 = 1
+        self.assertEqual(mx.minm(mat=mat2), max2)
+
+        mat3 = -mat2
+        max3 = -6
+        self.assertEqual(mx.minm(mat=mat3), max3)
+
+    def test_argmax(self) -> None:
+        """
+        Simple tests for the function that finds the argmax of the matrix
+        :return:
+        """
+        mat1 = mx.Matrix(data=[1, 2, 3])
+        max1 = (0, 2)
+        self.assertTupleEqual(mx.argmax(mat=mat1), max1)
+
+        mat2 = mx.Matrix(data=[[1, 2, 3], [6, 5, 4]])
+        max2 = (1, 0)
+        self.assertTupleEqual(mx.argmax(mat=mat2), max2)
+
+        mat3 = -mat2
+        max3 = (0, 0)
+        self.assertTupleEqual(mx.argmax(mat=mat3), max3)
+
+    def test_argmin(self) -> None:
+        """
+        Simple tests for the function that finds the argmin of the matrix
+        :return:
+        """
+        mat1 = mx.Matrix(data=[1, 2, 3])
+        min1 = (0, 0)
+        self.assertTupleEqual(mx.argmin(mat=mat1), min1)
+
+        mat2 = mx.Matrix(data=[[1, 2, 3], [6, 5, 0]])
+        min2 = (1, 2)
+        self.assertTupleEqual(mx.argmin(mat=mat2), min2)
+
+        mat3 = -mat2
+        min3 = (1, 0)
+        self.assertTupleEqual(mx.argmin(mat=mat3), min3)
+
 
 def main() -> None:
     suite = unittest.TestSuite()

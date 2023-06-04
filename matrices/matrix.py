@@ -415,6 +415,72 @@ class Matrix:
         return s
 
 
+def maxm(mat: Matrix) -> int | float:
+    """
+    Returns the maximum value of the matrix
+    :param mat:
+    :return:
+    """
+    maxval = float('-inf')
+    for row in mat:
+        for val in row:
+            if val > maxval:
+                maxval = val
+
+    return maxval
+
+
+def minm(mat: Matrix) -> int | float:
+    """
+    Returns the minimum value of the matrix
+    :param mat:
+    :return:
+    """
+    minval = float('inf')
+    for row in mat:
+        for val in row:
+            if val < minval:
+                minval = val
+
+    return minval
+
+
+def argmax(mat: Matrix) -> int | tuple:
+    """
+    Returns the index/indices of the maximum value of the matrix
+    :param mat:
+    :return:
+    """
+    # if mat.shape[0] == 1:
+    #     return mat.data[0].index(max(mat.data[0]))
+    maxval = float('-inf')
+    maxind = (0, 0)
+    for j, row in enumerate(mat.data):
+        for i, val in enumerate(row):
+            if val > maxval:
+                maxval = val
+                maxind = (j, i)
+
+    return maxind
+
+
+def argmin(mat: Matrix) -> int | tuple:
+    """
+    Returns the index/indices of the minimum value of the matrix
+    :param mat:
+    :return:
+    """
+    minval = float('inf')
+    minind = (0, 0)
+    for j, row in enumerate(mat.data):
+        for i, val in enumerate(row):
+            if val < minval:
+                minval = val
+                minind = (j, i)
+
+    return minind
+
+
 def identity_matrix(n: int) -> Matrix:
     """
     Generates a nxn identity matrix
