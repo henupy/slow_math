@@ -3,7 +3,6 @@ Unittests for the matrix operations
 """
 
 import math
-import random
 import unittest
 import matrix as mx
 import exceptions as exs
@@ -428,6 +427,7 @@ class TestMatrix(unittest.TestCase):
         diff = mat5 - mat4
         self.assertTrue(-mat4 + mat5 == diff)
         self.assertTrue(-mat4 - -mat5 == -mat4 + mat5)
+
 
 def main() -> None:
     suite = unittest.TestSuite()

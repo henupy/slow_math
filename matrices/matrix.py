@@ -32,7 +32,7 @@ class Matrix:
         :param data:
         :return:
         """
-        if not data or not data[0]:
+        if not data or (isinstance(data[0], list) and not data[0]):
             msg = 'No data provided for the matrix.'
             raise exs.EmptyMatrixError(msg)
 
@@ -390,6 +390,13 @@ class Matrix:
                     return False
 
         return True
+
+    def __getitem__(self, indices: int) -> int | float | list:
+        """
+        :param indices:
+        :return:
+        """
+        return self.data[indices]
 
     def __str__(self) -> str:
         """
