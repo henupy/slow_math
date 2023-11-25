@@ -41,7 +41,7 @@ class TestMatrix(unittest.TestCase):
         with self.assertRaises(exs.EmptyMatrixError):
             mx.Matrix(data=[[]])
         with self.assertRaises(exs.InvalidDataError):
-            mx.Matrix(data=['a', 'b', 'c'])
+            mx.Matrix(data=["a", "b", "c"])
         with self.assertRaises(exs.InvalidRowError):
             mx.Matrix(data=[[1, 2], [3]])
         with self.assertRaises(exs.InvalidRowError):
@@ -445,7 +445,6 @@ class TestMatrix(unittest.TestCase):
         max3 = -1
         self.assertEqual(mx.maxm(mat=mat3), max3)
 
-
     def test_min(self) -> None:
         """
         Simple tests for the function that finds the minimum value in the matrix
@@ -504,5 +503,5 @@ def main() -> None:
     unittest.TextTestRunner(verbosity=2).run(suite)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
