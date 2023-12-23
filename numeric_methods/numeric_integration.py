@@ -73,7 +73,7 @@ def trapezoid(f: Callable, a: int | float, b: int | float,
 
 def _simpson13(f: Callable, a: int | float, b: int | float, n: int) -> int | float:
     """
-    Implementation of Simpson's 1/3 rule
+    Implementation of Simpson"s 1/3 rule
     :param f:
     :param a:
     :param b:
@@ -90,7 +90,7 @@ def _simpson13(f: Callable, a: int | float, b: int | float, n: int) -> int | flo
 
 def _simpson38(f: Callable, a: int | float, b: int | float, n: int) -> int | float:
     """
-    Implementation of Simpson's 3/8 rule
+    Implementation of Simpson"s 3/8 rule
     :param f:
     :param a:
     :param b:
@@ -107,25 +107,25 @@ def _simpson38(f: Callable, a: int | float, b: int | float, n: int) -> int | flo
 
 
 def simpson(f: Callable, a: int | float, b: int | float,
-            n: int, rule: str = '1/3') -> int | float:
+            n: int, rule: str = "1/3") -> int | float:
     """
-    Calculates the definitive integral of the given function using the Simpson's
+    Calculates the definitive integral of the given function using the Simpson"s
     composite rule (https://en.wikipedia.org/wiki/Simpson%27s_rule). The specific
-    method/rule can be either Simpson's 1/3 rule or Simpson's 3/8 rule.
+    method/rule can be either Simpson"s 1/3 rule or Simpson"s 3/8 rule.
     :param f: The function to be integrated
     :param a: Lower integration limit
     :param b: Upper integration limit
-    :param n: Number of areas that the interval (a ... b) is split into. For the '1/3'
-        rule n must be even, and for the '3/8' rule n must be divisible by three.
-        If an 'unsuitable' n is given, it will be modified to be suitable.
-    :param rule: Which rule ('1/3' or ('3/8') is used. Defaults to ('1/3')
+    :param n: Number of areas that the interval (a ... b) is split into. For the "1/3"
+        rule n must be even, and for the "3/8" rule n must be divisible by three.
+        If an "unsuitable" n is given, it will be modified to be suitable.
+    :param rule: Which rule ("1/3" or ("3/8") is used. Defaults to ("1/3")
     :return:
     """
-    if rule == '3/8':
+    if rule == "3/8":
         if n % 3 != 0:
             n -= n % 3
         return _simpson38(f=f, a=a, b=b, n=n)
-    if rule != '1/3':
+    if rule != "1/3":
         print("Unrecognized rule, used the default rule '1/3'")
     if n % 2 != 0:
         n += 1
@@ -135,7 +135,7 @@ def simpson(f: Callable, a: int | float, b: int | float,
 def boole(f: Callable, a: int | float, b: int | float) -> int | float:
     """
     Calculates the definitive integral of the given function using the
-    simple Boole's rule (https://en.wikipedia.org/wiki/Boole%27s_rule).
+    simple Boole"s rule (https://en.wikipedia.org/wiki/Boole%27s_rule).
     The error term is ignored for the time being.
     :param f:
     :param a:
@@ -207,11 +207,11 @@ def fun3(t: int | float | np.ndarray) -> int | float | np.ndarray:
 
 
 def main():
-    # TODO: Add functionality for 'negative' areas (Monte Carlo)
-    # TODO: Add Romberg's method
+    # TODO: Add functionality for "negative" areas (Monte Carlo)
+    # TODO: Add Romberg"s method
     a, b = 1, 25
     n_rects = 1000
-    simp_rule = '1/3'
+    simp_rule = "1/3"
     func = fun2
     area_boole = boole(f=func, a=a, b=b)
     area_mpont = midpoint(f=func, a=a, b=b, n_rects=n_rects)
@@ -219,11 +219,11 @@ def main():
     area_rect = trapezoid(f=func, a=a, b=b, n_rects=n_rects)
     area_simp = simpson(f=func, a=a, b=b, n=n_rects, rule=simp_rule)
     print(f"Boole's rule:  {area_boole:.4f}")
-    print(f'Midpoint: {area_mpont:.4f}')
-    print(f'Monte Carlo: {area_mc:.4f}')
-    print(f'Rectangle: {area_rect:.4f}')
+    print(f"Midpoint: {area_mpont:.4f}")
+    print(f"Monte Carlo: {area_mc:.4f}")
+    print(f"Rectangle: {area_rect:.4f}")
     print(f"Simpson's rule (rule {simp_rule}): {area_simp:.4f}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

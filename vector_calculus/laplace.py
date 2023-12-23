@@ -32,9 +32,9 @@ def _fwd2(field: np.ndarray, row: int, col: int, dx: int | float,
     :param axis:
     :return:
     """
-    if axis not in ['x', 'y']:
-        raise ValueError('Invalid axis')
-    if axis == 'x':
+    if axis not in ["x", "y"]:
+        raise ValueError("Invalid axis")
+    if axis == "x":
         return (field[row, col + 1] - field[row, col]) / dx
     return (field[row + 1, col] - field[row, col]) / dy
 
@@ -51,9 +51,9 @@ def _cnt2(field: np.ndarray, row: int, col: int, dx: int | float,
     :param axis:
     :return:
     """
-    if axis not in ['x', 'y']:
-        raise ValueError('Invalid axis')
-    if axis == 'x':
+    if axis not in ["x", "y"]:
+        raise ValueError("Invalid axis")
+    if axis == "x":
         return (field[row, col - 1] - 2 * field[row, col] + field[row, col + 1]) \
             / (dx * dx)
     return (field[row - 1, col] - 2 * field[row, col] + field[row + 1, col]) / (dy * dy)
@@ -71,9 +71,9 @@ def _bwd2(field: np.ndarray, row: int, col: int, dx: int | float,
     :param axis:
     :return:
     """
-    if axis not in ['x', 'y']:
-        raise ValueError('Invalid axis')
-    if axis == 'x':
+    if axis not in ["x", "y"]:
+        raise ValueError("Invalid axis")
+    if axis == "x":
         return (field[row, col] - field[row, col - 1]) / dx
     return (field[row, col] - field[row - 1, col]) / dy
 
@@ -92,8 +92,8 @@ def laplace(field: np.ndarray, dx: int | float, dy: int | float) -> np.ndarray:
     laplacian[:, :] = field[:, :]
     for j in range(1, rows - 1):
         for i in range(1, cols - 1):
-            dfdx2 = _cnt2(field, j, i, dx, dy, axis='x')
-            dfdy2 = _cnt2(field, j, i, dx, dy, axis='y')
+            dfdx2 = _cnt2(field, j, i, dx, dy, axis="x")
+            dfdy2 = _cnt2(field, j, i, dx, dy, axis="y")
             laplacian[j, i] = dfdx2 + dfdy2
 
     return laplacian
@@ -121,5 +121,5 @@ def main():
     print(divgrad == lapl)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

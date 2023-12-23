@@ -77,10 +77,10 @@ def visualise(x: int | float, y: int | float, fun: Callable, v: np.ndarray,
     xx, yy = np.meshgrid(xx, yy)
     field = fun(xx, yy)
     plt.contourf(xx, yy, field)
-    plt.quiver(x, y, nabla[0], nabla[1], color='black', label='Gradient',
-               angles='xy', scale_units='xy', scale=1)
-    plt.quiver(x, y, v_scaled[0], v_scaled[1], color='red', label='Dir. Derivative',
-               angles='xy', scale_units='xy', scale=1)
+    plt.quiver(x, y, nabla[0], nabla[1], color="black", label="Gradient",
+               angles="xy", scale_units="xy", scale=1)
+    plt.quiver(x, y, v_scaled[0], v_scaled[1], color="red", label="Dir. Derivative",
+               angles="xy", scale_units="xy", scale=1)
     plt.legend()
     plt.show()
 
@@ -92,5 +92,5 @@ def main():
     visualise(x, y, fun, v)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

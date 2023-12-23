@@ -80,33 +80,33 @@ class ComplexNumber:
         """
         r = math.sqrt(self.real * self.real + self.imag * self.imag)
         a = math.degrees(math.atan2(self.imag, self.real))
-        return f'{r:.2f}<{a:.2f}'
+        return f"{r:.2f}<{a:.2f}"
 
     def __repr__(self) -> str:
         if self._sign(self.imag) == 1:
-            return f'{self.real} + {self.imag}i'
-        return f'{self.real} - {self.imag * -1}i'
+            return f"{self.real} + {self.imag}i"
+        return f"{self.real} - {self.imag * -1}i"
 
     def __str__(self) -> str:
         if self._sign(self.imag) == 1:
-            return f'{self.real} + {self.imag}i'
-        return f'{self.real} - {self.imag * -1}i'
+            return f"{self.real} + {self.imag}i"
+        return f"{self.real} - {self.imag * -1}i"
 
 
 def main():
     comp_1 = ComplexNumber(-1, 5)
     comp_2 = ComplexNumber(3, -10)
     comp_3 = comp_1 * comp_2
-    print(f'1: {comp_1.polar()}, 2: {comp_2.polar()}, 3: {comp_3.polar()}')
+    print(f"1: {comp_1.polar()}, 2: {comp_2.polar()}, 3: {comp_3.polar()}")
     plt.scatter(comp_1.real, comp_1.imag, label=repr(comp_1))
     plt.scatter(comp_2.real, comp_2.imag, label=repr(comp_2))
     plt.scatter(comp_3.real, comp_3.imag, label=repr(comp_3))
-    plt.xlabel('Real')
-    plt.ylabel('Imag')
+    plt.xlabel("Real")
+    plt.ylabel("Imag")
     plt.grid()
     plt.legend()
     plt.show()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

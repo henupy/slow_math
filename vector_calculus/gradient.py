@@ -63,9 +63,9 @@ def _fwd(field: np.ndarray, row: int, col: int, dx: int | float,
     :param axis:
     :return:
     """
-    if axis not in ['x', 'y']:
-        raise ValueError('Invalid axis')
-    if axis == 'x':
+    if axis not in ["x", "y"]:
+        raise ValueError("Invalid axis")
+    if axis == "x":
         return (field[row, col + 1] - field[row, col]) / dx
     return (field[row + 1, col] - field[row, col]) / dy
 
@@ -82,9 +82,9 @@ def _cnt(field: np.ndarray, row: int, col: int, dx: int | float,
     :param axis:
     :return:
     """
-    if axis not in ['x', 'y']:
-        raise ValueError('Invalid axis')
-    if axis == 'x':
+    if axis not in ["x", "y"]:
+        raise ValueError("Invalid axis")
+    if axis == "x":
         return (field[row, col + 1] - field[row, col - 1]) / (2 * dx)
     return (field[row + 1, col] - field[row - 1, col]) / (2 * dy)
 
@@ -101,9 +101,9 @@ def _bwd(field: np.ndarray, row: int, col: int, dx: int | float,
     :param axis:
     :return:
     """
-    if axis not in ['x', 'y']:
-        raise ValueError('Invalid axis')
-    if axis == 'x':
+    if axis not in ["x", "y"]:
+        raise ValueError("Invalid axis")
+    if axis == "x":
         return (field[row, col] - field[row, col - 1]) / dx
     return (field[row, col] - field[row - 1, col]) / dy
 
@@ -122,48 +122,48 @@ def grad(field: np.ndarray, dx: int | float, dy: int | float) -> np.ndarray:
         for i in range(cols):
             # Bottom left corner: use forward difference for both
             if j == 0 and i == 0:
-                nabla[j, i, 0] = _fwd(field, j, i, dx, dy, axis='x')
-                nabla[j, i, 1] = _fwd(field, j, i, dx, dy, axis='y')
+                nabla[j, i, 0] = _fwd(field, j, i, dx, dy, axis="x")
+                nabla[j, i, 1] = _fwd(field, j, i, dx, dy, axis="y")
 
             # Bottom side (no corners): Center diff. for x, forward diff. for y
             elif j == 0 and 0 < i < (cols - 1):
-                nabla[j, i, 0] = _cnt(field, j, i, dx, dy, axis='x')
-                nabla[j, i, 1] = _fwd(field, j, i, dx, dy, axis='y')
+                nabla[j, i, 0] = _cnt(field, j, i, dx, dy, axis="x")
+                nabla[j, i, 1] = _fwd(field, j, i, dx, dy, axis="y")
 
             # Bottom right corner: Backward diff. for x, forward diff. for y
             elif j == 0 and i == (cols - 1):
-                nabla[j, i, 0] = _bwd(field, j, i, dx, dy, axis='x')
-                nabla[j, i, 1] = _fwd(field, j, i, dx, dy, axis='y')
+                nabla[j, i, 0] = _bwd(field, j, i, dx, dy, axis="x")
+                nabla[j, i, 1] = _fwd(field, j, i, dx, dy, axis="y")
 
             # Right side (no corners): Backward diff. for x, center diff. for y
             elif 0 < j < (rows - 1) and i == (cols - 1):
-                nabla[j, i, 0] = _bwd(field, j, i, dx, dy, axis='x')
-                nabla[j, i, 1] = _cnt(field, j, i, dx, dy, axis='y')
+                nabla[j, i, 0] = _bwd(field, j, i, dx, dy, axis="x")
+                nabla[j, i, 1] = _cnt(field, j, i, dx, dy, axis="y")
 
             # Top right corner: Backward. diff for both
             elif j == (rows - 1) and i == (cols - 1):
-                nabla[j, i, 0] = _bwd(field, j, i, dx, dy, axis='x')
-                nabla[j, i, 1] = _bwd(field, j, i, dx, dy, axis='y')
+                nabla[j, i, 0] = _bwd(field, j, i, dx, dy, axis="x")
+                nabla[j, i, 1] = _bwd(field, j, i, dx, dy, axis="y")
 
             # Top side (no corners): Center diff. for x, backward diff. for y
             elif j == (rows - 1) and 0 < i < (cols - 1):
-                nabla[j, i, 0] = _cnt(field, j, i, dx, dy, axis='x')
-                nabla[j, i, 1] = _bwd(field, j, i, dx, dy, axis='y')
+                nabla[j, i, 0] = _cnt(field, j, i, dx, dy, axis="x")
+                nabla[j, i, 1] = _bwd(field, j, i, dx, dy, axis="y")
 
             # Top left corner: Forward diff. for x, backward diff. for y
             elif j == (rows - 1) and i == 0:
-                nabla[j, i, 0] = _fwd(field, j, i, dx, dy, axis='x')
-                nabla[j, i, 1] = _bwd(field, j, i, dx, dy, axis='y')
+                nabla[j, i, 0] = _fwd(field, j, i, dx, dy, axis="x")
+                nabla[j, i, 1] = _bwd(field, j, i, dx, dy, axis="y")
 
             # Left side (no corners): Forward diff. for x, center diff. for y
             elif (rows - 1) > j > 0 == i:
-                nabla[j, i, 0] = _fwd(field, j, i, dx, dy, axis='x')
-                nabla[j, i, 1] = _cnt(field, j, i, dx, dy, axis='y')
+                nabla[j, i, 0] = _fwd(field, j, i, dx, dy, axis="x")
+                nabla[j, i, 1] = _cnt(field, j, i, dx, dy, axis="y")
 
             # Middle cells: Center diff. for both
             else:
-                nabla[j, i, 0] = _cnt(field, j, i, dx, dy, axis='x')
-                nabla[j, i, 1] = _cnt(field, j, i, dx, dy, axis='y')
+                nabla[j, i, 0] = _cnt(field, j, i, dx, dy, axis="x")
+                nabla[j, i, 1] = _cnt(field, j, i, dx, dy, axis="y")
 
     return nabla
 
@@ -200,5 +200,5 @@ def main() -> None:
     visualise(x, y, field, nabla1, 2)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

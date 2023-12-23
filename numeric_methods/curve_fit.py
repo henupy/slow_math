@@ -16,7 +16,7 @@ def load_data(fname: str) -> np.ndarray:
     :param fname:
     :return:
     """
-    with open(fname, 'r') as f:
+    with open(fname, "r") as f:
         lines = f.readlines()
         data = np.zeros((len(lines), 2))
         for i, line in enumerate(lines):
@@ -36,7 +36,7 @@ def gen_noicy_data(func: Callable, x: np.ndarray, params: np.ndarray,
     :param x: Array of x-coordinates
     :param params: The parameters to the given function
     :param n_points: Number of datapoints
-    :param noice_factor: How much the datapoints can deviate from the function's
+    :param noice_factor: How much the datapoints can deviate from the function"s
         curve
     :return:
     """
@@ -148,17 +148,17 @@ def polynomial(x: np.ndarray, a: int | float, b: int | float,
 
 
 def main() -> None:
-    datafile = 'data64.txt'
+    datafile = "data64.txt"
     data = load_data(datafile)
     x, y = data.T[0], data.T[1]
-    plt.scatter(x, y, c='r', label='Data points')
+    plt.scatter(x, y, c="r", label="Data points")
     fun = polynomial
     popt = fit_curve(fit_func=fun, x=x, y=y)
-    plt.plot(x, fun(x, *popt), 'g-', label='Fitted line')
+    plt.plot(x, fun(x, *popt), "g-", label="Fitted line")
     plt.grid()
     plt.legend()
     plt.show()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

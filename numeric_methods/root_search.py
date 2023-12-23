@@ -27,7 +27,7 @@ def newton(f: callable, diff: callable, a: int | float,
 
 def _sign(num: int | float) -> int:
     """
-    Returns 1 if the sign of 'num' is positive or zero, else -1
+    Returns 1 if the sign of "num" is positive or zero, else -1
     :param num:
     :return:
     """
@@ -69,9 +69,9 @@ def main():
     diff = middle
     root_newton = newton(polyfun, diff, guess, limit)
     root_split = split(polyfun, neg, pos, limit)
-    print(f'Root (newton): {root_newton}')
-    print(f'Root (split): {root_split}')
+    print(f"Root (newton): {root_newton}")
+    print(f"Root (split): {root_split}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

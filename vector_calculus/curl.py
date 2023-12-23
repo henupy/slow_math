@@ -97,9 +97,9 @@ def _fwd_curl(field: np.ndarray, row: int, col: int, dx: int | float,
     :param axis:
     :return:
     """
-    if axis not in ['x', 'y']:
-        raise ValueError('Invalid axis')
-    if axis == 'x':
+    if axis not in ["x", "y"]:
+        raise ValueError("Invalid axis")
+    if axis == "x":
         return (field[row + 1, col, 0] - field[row, col, 0]) / dy
     return (field[row, col + 1, 1] - field[row, col, 1]) / dx
 
@@ -116,9 +116,9 @@ def _cnt_curl(field: np.ndarray, row: int, col: int, dx: int | float,
     :param axis:
     :return:
     """
-    if axis not in ['x', 'y']:
-        raise ValueError('Invalid axis')
-    if axis == 'x':
+    if axis not in ["x", "y"]:
+        raise ValueError("Invalid axis")
+    if axis == "x":
         return (field[row + 1, col, 0] - field[row - 1, col, 0]) / (2 * dy)
     return (field[row, col + 1, 1] - field[row, col - 1, 1]) / (2 * dx)
 
@@ -135,9 +135,9 @@ def _bwd_curl(field: np.ndarray, row: int, col: int, dx: int | float,
     :param axis:
     :return:
     """
-    if axis not in ['x', 'y']:
-        raise ValueError('Invalid axis')
-    if axis == 'x':
+    if axis not in ["x", "y"]:
+        raise ValueError("Invalid axis")
+    if axis == "x":
         return (field[row, col, 0] - field[row - 1, col, 0]) / dy
     return (field[row, col, 1] - field[row, col - 1, 1]) / dx
 
@@ -156,56 +156,56 @@ def curl(field: np.ndarray, dx: int | float, dy: int | float) -> np.ndarray:
         for i in range(cols):
             # Bottom left corner: use forward difference for both
             if j == 0 and i == 0:
-                dfxdy = _fwd_curl(field, j, i, dx, dy, axis='x')
-                dfydx = _fwd_curl(field, j, i, dx, dy, axis='y')
+                dfxdy = _fwd_curl(field, j, i, dx, dy, axis="x")
+                dfydx = _fwd_curl(field, j, i, dx, dy, axis="y")
                 rotor[j, i] = dfydx - dfxdy
 
             # Bottom side (no corners): Center diff. for x, forward diff. for y
             elif j == 0 and 0 < i < (cols - 1):
-                dfxdy = _fwd_curl(field, j, i, dx, dy, axis='x')
-                dfydx = _cnt_curl(field, j, i, dx, dy, axis='y')
+                dfxdy = _fwd_curl(field, j, i, dx, dy, axis="x")
+                dfydx = _cnt_curl(field, j, i, dx, dy, axis="y")
                 rotor[j, i] = dfydx - dfxdy
 
             # Bottom right corner: Backward diff. for x, forward diff. for y
             elif j == 0 and i == (cols - 1):
-                dfxdy = _fwd_curl(field, j, i, dx, dy, axis='x')
-                dfydx = _bwd_curl(field, j, i, dx, dy, axis='y')
+                dfxdy = _fwd_curl(field, j, i, dx, dy, axis="x")
+                dfydx = _bwd_curl(field, j, i, dx, dy, axis="y")
                 rotor[j, i] = dfydx - dfxdy
 
             # Right side (no corners): Backward diff. for x, center diff. for y
             elif 0 < j < (rows - 1) and i == (cols - 1):
-                dfxdy = _cnt_curl(field, j, i, dx, dy, axis='x')
-                dfydx = _bwd_curl(field, j, i, dx, dy, axis='y')
+                dfxdy = _cnt_curl(field, j, i, dx, dy, axis="x")
+                dfydx = _bwd_curl(field, j, i, dx, dy, axis="y")
                 rotor[j, i] = dfydx - dfxdy
 
             # Top right corner: Backward. diff for both
             elif j == (rows - 1) and i == (cols - 1):
-                dfxdy = _bwd_curl(field, j, i, dx, dy, axis='x')
-                dfydx = _bwd_curl(field, j, i, dx, dy, axis='y')
+                dfxdy = _bwd_curl(field, j, i, dx, dy, axis="x")
+                dfydx = _bwd_curl(field, j, i, dx, dy, axis="y")
                 rotor[j, i] = dfydx - dfxdy
 
             # Top side (no corners): Center diff. for x, backward diff. for y
             elif j == (rows - 1) and 0 < i < (cols - 1):
-                dfxdy = _bwd_curl(field, j, i, dx, dy, axis='x')
-                dfydx = _cnt_curl(field, j, i, dx, dy, axis='y')
+                dfxdy = _bwd_curl(field, j, i, dx, dy, axis="x")
+                dfydx = _cnt_curl(field, j, i, dx, dy, axis="y")
                 rotor[j, i] = dfydx - dfxdy
 
             # Top left corner: Forward diff. for x, backward diff. for y
             elif j == (rows - 1) and i == 0:
-                dfxdy = _bwd_curl(field, j, i, dx, dy, axis='x')
-                dfydx = _fwd_curl(field, j, i, dx, dy, axis='y')
+                dfxdy = _bwd_curl(field, j, i, dx, dy, axis="x")
+                dfydx = _fwd_curl(field, j, i, dx, dy, axis="y")
                 rotor[j, i] = dfydx - dfxdy
 
             # Left side (no corners): Forward diff. for x, center diff. for y
             elif (rows - 1) > j > 0 == i:
-                dfxdy = _cnt_curl(field, j, i, dx, dy, axis='x')
-                dfydx = _fwd_curl(field, j, i, dx, dy, axis='y')
+                dfxdy = _cnt_curl(field, j, i, dx, dy, axis="x")
+                dfydx = _fwd_curl(field, j, i, dx, dy, axis="y")
                 rotor[j, i] = dfydx - dfxdy
 
             # Middle cells: Center diff. for both
             else:
-                dfxdy = _cnt_curl(field, j, i, dx, dy, axis='x')
-                dfydx = _cnt_curl(field, j, i, dx, dy, axis='y')
+                dfxdy = _cnt_curl(field, j, i, dx, dy, axis="x")
+                dfydx = _cnt_curl(field, j, i, dx, dy, axis="y")
                 rotor[j, i] = dfydx - dfxdy
 
     return rotor
@@ -224,7 +224,7 @@ def visualise(x: np.ndarray, y: np.ndarray, field: np.ndarray,
     plt.contourf(x, y, rotor)
     plt.colorbar()
     u, v = field[::skip, ::skip, 0], field[::skip, ::skip, 1]
-    plt.streamplot(x[::skip], y[::skip], u, v, density=1.4, color='black')
+    plt.streamplot(x[::skip], y[::skip], u, v, density=1.4, color="black")
     plt.show()
 
 
@@ -239,5 +239,5 @@ def main():
     visualise(x, y, field, rotor)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

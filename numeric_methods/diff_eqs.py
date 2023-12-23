@@ -7,7 +7,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from typing import Callable
-from scipy.integrate import odeint
 
 # For typing
 num = int | float | list | np.ndarray
@@ -19,7 +18,7 @@ def eulerfw(diff_eq: Callable, y0: num, trange: np.ndarray, *args) \
     Solves a system of first-order ordinary differential equations
     with the provided parameters and initial conditions numerically
     using the (forward) Euler method.
-    :param diff_eq: Function for y'
+    :param diff_eq: Function for y"
     :param y0: Initial values for the equations
     :param trange: Time points where the equation is solved
     :param args: Other arguments for the differential equation
@@ -46,7 +45,7 @@ def eulerbw(diff_eq: Callable, y0: num, trange: np.ndarray, *args) \
     Solves a first-order ordinary differential equation with the
     provided parameters and initial conditions numerically using the
     backward Euler method.
-    :param diff_eq: Function for y'
+    :param diff_eq: Function for y"
     :param y0: Initial values for the equations
     :param trange: Time points where the equation is solved
     :param args: Other arguments for the differential equation
@@ -79,7 +78,7 @@ def rk4(diff_eq: Callable, y0: num, trange: np.ndarray, *args) -> np.ndarray:
     classic Runge-Kutta method
     :param diff_eq: Function which returns the righthandside of the
         equations making up the system of equations
-    :param y0: Initial values for y and y' (i.e. the terms in the system
+    :param y0: Initial values for y and y" (i.e. the terms in the system
         of equations)
     :param trange: Time points for which the equation is solved
     :param args: Any additional paramaters for the differential equation
@@ -112,7 +111,7 @@ def some_eq(y: int | float | np.ndarray, t: int | float) \
     :param y:
     :param t:
     :return: Returns the righthandside of the equation
-    y' == -t / (1 + y ** 2)
+    y" == -t / (1 + y ** 2)
     """
     return -t / (1 + y * y)
 
@@ -158,22 +157,19 @@ def yeet():
     b, c = 0.25, 5.
     y0 = [np.pi - 0.1, 0.0]
     t = np.linspace(0, 60, 601)
-    sol = odeint(pend, y0, t, args=(b, c))
-    plt.plot(t, sol[:, 0], 'b', label='theta(t)')
-    plt.plot(t, sol[:, 1], 'r', label='omega(t)')
     sol_e = rk4(pend, y0, t, b, c)
-    plt.plot(t, sol_e[:, 0], 'g', label='theta(t) rk4')
-    plt.plot(t, sol_e[:, 1], 'c', label='omega(t) rk4')
+    plt.plot(t, sol_e[:, 0], "g", label="theta(t) rk4")
+    plt.plot(t, sol_e[:, 1], "c", label="omega(t) rk4")
 
     # # Example from matlab
     # tspan = np.linspace(0, 20, 201)
     # initvals = [2, 0]
     # sol = odeint(ait, initvals, tspan)
-    # plt.plot(tspan, sol[:, 0], 'bo-', label='y1', fillstyle='none')
-    # plt.plot(tspan, sol[:, 1], 'ro-', label='y2', fillstyle='none')
+    # plt.plot(tspan, sol[:, 0], "bo-", label="y1", fillstyle="none")
+    # plt.plot(tspan, sol[:, 1], "ro-", label="y2", fillstyle="none")
     # sol_rk = rk4(ait, initvals, tspan)
-    # plt.plot(tspan, sol_rk[:, 0], 'go-', label='y1 (rk4)', fillstyle='none')
-    # plt.plot(tspan, sol_rk[:, 1], 'co-', label='y2 (rk4)', fillstyle='none')
+    # plt.plot(tspan, sol_rk[:, 0], "go-", label="y1 (rk4)", fillstyle="none")
+    # plt.plot(tspan, sol_rk[:, 1], "co-", label="y2 (rk4)", fillstyle="none")
 
     plt.legend()
     plt.grid()
@@ -189,9 +185,9 @@ def main():
     y_rk = rk4(eq, y0, t_vals)
     y_efw = eulerfw(eq, y0bw, t_vals)
     y_ebw = eulerbw(eq, y0bw, t_vals)
-    plt.plot(t_vals, y_rk, 'r', label='y (RK4)')
-    plt.plot(t_vals, y_ebw, 'g', label='y (eulerbw)')
-    plt.plot(t_vals, y_efw, 'c', label='y (eulerfw)')
+    plt.plot(t_vals, y_rk, "r", label="y (RK4)")
+    plt.plot(t_vals, y_ebw, "g", label="y (eulerbw)")
+    plt.plot(t_vals, y_efw, "c", label="y (eulerfw)")
     plt.legend()
     plt.grid()
     plt.show()
@@ -199,5 +195,5 @@ def main():
     # yeet()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

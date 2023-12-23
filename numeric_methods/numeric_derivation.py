@@ -55,10 +55,10 @@ def main():
     f = forward(expfun, x)
     m = middle(expfun, x)
     acc = accuraat(x)
-    print(f'Back: {b}, forward: {f}, middle: {m}, accurate: {acc}')
-    print(f'Errors: Back: {abs(b - acc)}, forward: {abs(f - acc)} '
-          f'Middle: {abs(m - acc)}')
+    print(f"Back: {b}, forward: {f}, middle: {m}, accurate: {acc}")
+    print(f"Errors: Back: {abs(b - acc)}, forward: {abs(f - acc)} "
+          f"Middle: {abs(m - acc)}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

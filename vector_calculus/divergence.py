@@ -69,9 +69,9 @@ def _fwd_div(field: np.ndarray, row: int, col: int, dx: int | float,
     :param axis:
     :return:
     """
-    if axis not in ['x', 'y']:
-        raise ValueError('Invalid axis')
-    if axis == 'x':
+    if axis not in ["x", "y"]:
+        raise ValueError("Invalid axis")
+    if axis == "x":
         return (field[row, col + 1, 0] - field[row, col, 0]) / dx
     return (field[row + 1, col, 1] - field[row, col, 1]) / dy
 
@@ -88,9 +88,9 @@ def _cnt_div(field: np.ndarray, row: int, col: int, dx: int | float,
     :param axis:
     :return:
     """
-    if axis not in ['x', 'y']:
-        raise ValueError('Invalid axis')
-    if axis == 'x':
+    if axis not in ["x", "y"]:
+        raise ValueError("Invalid axis")
+    if axis == "x":
         return (field[row, col + 1, 0] - field[row, col - 1, 0]) / (2 * dx)
     return (field[row + 1, col, 1] - field[row - 1, col, 1]) / (2 * dy)
 
@@ -107,9 +107,9 @@ def _bwd_div(field: np.ndarray, row: int, col: int, dx: int | float,
     :param axis:
     :return:
     """
-    if axis not in ['x', 'y']:
-        raise ValueError('Invalid axis')
-    if axis == 'x':
+    if axis not in ["x", "y"]:
+        raise ValueError("Invalid axis")
+    if axis == "x":
         return (field[row, col, 0] - field[row, col - 1, 0]) / dx
     return (field[row, col, 1] - field[row - 1, col, 1]) / dy
 
@@ -128,56 +128,56 @@ def div(field: np.ndarray, dx: int | float, dy: int | float) -> np.ndarray:
         for i in range(cols):
             # Bottom left corner: use forward difference for both
             if j == 0 and i == 0:
-                dfxdx = _fwd_div(field, j, i, dx, dy, axis='x')
-                dfydy = _fwd_div(field, j, i, dx, dy, axis='y')
+                dfxdx = _fwd_div(field, j, i, dx, dy, axis="x")
+                dfydy = _fwd_div(field, j, i, dx, dy, axis="y")
                 diver[j, i] = dfxdx + dfydy
 
             # Bottom side (no corners): Center diff. for x, forward diff. for y
             elif j == 0 and 0 < i < (cols - 1):
-                dfxdx = _cnt_div(field, j, i, dx, dy, axis='x')
-                dfydy = _fwd_div(field, j, i, dx, dy, axis='y')
+                dfxdx = _cnt_div(field, j, i, dx, dy, axis="x")
+                dfydy = _fwd_div(field, j, i, dx, dy, axis="y")
                 diver[j, i] = dfxdx + dfydy
 
             # Bottom right corner: Backward diff. for x, forward diff. for y
             elif j == 0 and i == (cols - 1):
-                dfxdx = _bwd_div(field, j, i, dx, dy, axis='x')
-                dfydy = _fwd_div(field, j, i, dx, dy, axis='y')
+                dfxdx = _bwd_div(field, j, i, dx, dy, axis="x")
+                dfydy = _fwd_div(field, j, i, dx, dy, axis="y")
                 diver[j, i] = dfxdx + dfydy
 
             # Right side (no corners): Backward diff. for x, center diff. for y
             elif 0 < j < (rows - 1) and i == (cols - 1):
-                dfxdx = _bwd_div(field, j, i, dx, dy, axis='x')
-                dfydy = _cnt_div(field, j, i, dx, dy, axis='y')
+                dfxdx = _bwd_div(field, j, i, dx, dy, axis="x")
+                dfydy = _cnt_div(field, j, i, dx, dy, axis="y")
                 diver[j, i] = dfxdx + dfydy
 
             # Top right corner: Backward. diff for both
             elif j == (rows - 1) and i == (cols - 1):
-                dfxdx = _bwd_div(field, j, i, dx, dy, axis='x')
-                dfydy = _bwd_div(field, j, i, dx, dy, axis='y')
+                dfxdx = _bwd_div(field, j, i, dx, dy, axis="x")
+                dfydy = _bwd_div(field, j, i, dx, dy, axis="y")
                 diver[j, i] = dfxdx + dfydy
 
             # Top side (no corners): Center diff. for x, backward diff. for y
             elif j == (rows - 1) and 0 < i < (cols - 1):
-                dfxdx = _cnt_div(field, j, i, dx, dy, axis='x')
-                dfydy = _bwd_div(field, j, i, dx, dy, axis='y')
+                dfxdx = _cnt_div(field, j, i, dx, dy, axis="x")
+                dfydy = _bwd_div(field, j, i, dx, dy, axis="y")
                 diver[j, i] = dfxdx + dfydy
 
             # Top left corner: Forward diff. for x, backward diff. for y
             elif j == (rows - 1) and i == 0:
-                dfxdx = _fwd_div(field, j, i, dx, dy, axis='x')
-                dfydy = _bwd_div(field, j, i, dx, dy, axis='y')
+                dfxdx = _fwd_div(field, j, i, dx, dy, axis="x")
+                dfydy = _bwd_div(field, j, i, dx, dy, axis="y")
                 diver[j, i] = dfxdx + dfydy
 
             # Left side (no corners): Forward diff. for x, center diff. for y
             elif (rows - 1) > j > 0 == i:
-                dfxdx = _fwd_div(field, j, i, dx, dy, axis='x')
-                dfydy = _cnt_div(field, j, i, dx, dy, axis='y')
+                dfxdx = _fwd_div(field, j, i, dx, dy, axis="x")
+                dfydy = _cnt_div(field, j, i, dx, dy, axis="y")
                 diver[j, i] = dfxdx + dfydy
 
             # Middle cells: Center diff. for both
             else:
-                dfxdx = _cnt_div(field, j, i, dx, dy, axis='x')
-                dfydy = _cnt_div(field, j, i, dx, dy, axis='y')
+                dfxdx = _cnt_div(field, j, i, dx, dy, axis="x")
+                dfydy = _cnt_div(field, j, i, dx, dy, axis="y")
                 diver[j, i] = dfxdx + dfydy
 
     return diver
@@ -199,7 +199,7 @@ def visualise(x: np.ndarray, y: np.ndarray, field: np.ndarray,
     plt.contourf(x, y, diver)
     plt.colorbar()
     u, v = field[::skip, ::skip, 0], field[::skip, ::skip, 1]
-    plt.streamplot(x[::skip], y[::skip], u, v, color='black')
+    plt.streamplot(x[::skip], y[::skip], u, v, color="black")
     plt.show()
 
 
@@ -215,5 +215,5 @@ def main():
     visualise(x, y, vfield, diver, 1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
