@@ -232,7 +232,7 @@ def main():
     a, b, n = -5, 5, 2001
     fun = efield
     x = y = np.linspace(a, b, n)
-    dx = dy = x[1] - x[0]
+    dx = dy = float(x[1]) - float(x[0])
     xx, yy = np.meshgrid(x, y)
     field = fun(xx, yy)
     rotor = curl(field, dx, dy)

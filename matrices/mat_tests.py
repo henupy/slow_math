@@ -499,7 +499,7 @@ class TestMatrix(unittest.TestCase):
 
 def main() -> None:
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestMatrix))
+    suite.addTest(unittest.TestLoader.loadTestsFromTestCase(testCaseClass=TestMatrix))
     unittest.TextTestRunner(verbosity=2).run(suite)
 
 
