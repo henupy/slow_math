@@ -8,6 +8,8 @@ import matrix as mx
 import exceptions as exs
 
 
+# TODO: Start using Matrix objects in the tests for the targets
+
 def _almost_equal(mat1: mx.Matrix, mat2: mx.Matrix,
                   eps: float = 1e-6) -> bool:
     """
@@ -19,7 +21,7 @@ def _almost_equal(mat1: mx.Matrix, mat2: mx.Matrix,
     :param eps:
     :return:
     """
-    for row1, row2 in zip(mat1.data, mat2.data):
+    for row1, row2 in zip(mat1, mat2):
         for v1, v2 in zip(row1, row2):
             diff = abs(v1 - v2)
             if diff > eps:
@@ -236,19 +238,19 @@ class TestMatrix(unittest.TestCase):
         res1 = mat1 * mul
         mat2 = mx.Matrix(data=[[1, 2, 3, 4]])
         res2 = mat2 * mul
-        self.assertListEqual(res1.data, [[5, 10, 15, 20]])
-        self.assertListEqual(res1.data, res2.data)
+        self.assertListEqual(res1._data, [[5, 10, 15, 20]])
+        self.assertListEqual(res1._data, res2._data)
 
         # Multiplication of a matrix with a single column
         mat3 = mx.Matrix(data=[[1], [2], [3], [4]])
         res3 = mat3 * mul
-        self.assertListEqual(res3.data, [[5], [10], [15], [20]])
+        self.assertListEqual(res3._data, [[5], [10], [15], [20]])
 
         # Multiplication of a "fuller" matrix
         mat4 = mx.Matrix(data=[[1, 2, 3], [4, 5, 6]])
         res4 = mat4 * mul
         prod = [[5, 10, 15], [20, 25, 30]]
-        self.assertListEqual(res4.data, prod)
+        self.assertListEqual(res4._data, prod)
 
     def test_elementwise_mul(self) -> None:
         """
@@ -292,17 +294,17 @@ class TestMatrix(unittest.TestCase):
         mat1 = mx.Matrix(data=[1, 2])
         mat1 = mx.elem_exp(mat=mat1)
         res1 = [[math.exp(1), math.exp(2)]]  # Note the nested list
-        self.assertListEqual(mat1.data, res1)
+        self.assertListEqual(mat1._data, res1)
 
         mat2 = mx.Matrix(data=[[1], [2]])
         mat2 = mx.elem_exp(mat=mat2)
         res2 = [[math.exp(1)], [math.exp(2)]]
-        self.assertListEqual(mat2.data, res2)
+        self.assertListEqual(mat2._data, res2)
 
         mat3 = mx.Matrix(data=[[1, 2], [3, 4]])
         mat3 = mx.elem_exp(mat=mat3)
         res3 = [[math.exp(1), math.exp(2)], [math.exp(3), math.exp(4)]]
-        self.assertListEqual(mat3.data, res3)
+        self.assertListEqual(mat3._data, res3)
 
     def test_mat_mul(self) -> None:
         """
@@ -343,11 +345,11 @@ class TestMatrix(unittest.TestCase):
 
         # Valid cases
         res1 = [[1]]
-        self.assertListEqual(mx.identity_matrix(n=1).data, res1)
+        self.assertListEqual(mx.identity_matrix(n=1)._data, res1)
         res2 = [[1, 0], [0, 1]]
-        self.assertListEqual(mx.identity_matrix(n=2).data, res2)
+        self.assertListEqual(mx.identity_matrix(n=2)._data, res2)
         res3 = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
-        self.assertListEqual(mx.identity_matrix(n=4).data, res3)
+        self.assertListEqual(mx.identity_matrix(n=4)._data, res3)
 
     def test_mat_pow(self) -> None:
         """
@@ -495,6 +497,28 @@ class TestMatrix(unittest.TestCase):
         mat3 = -mat2
         min3 = (1, 0)
         self.assertTupleEqual(mx.argmin(mat=mat3), min3)
+
+    def test_determinant(self) -> None:
+        """
+        :return:
+        """
+        mat1 = mx.Matrix(data=[1, 2, 3])
+        with self.assertRaises(exs.DimensionError):
+            _ = mat1.det()
+
+        mat2 = mx.Matrix(data=[[1, 2, 3], [4, 5, 6]])
+        with self.assertRaises(exs.DimensionError):
+            _ = mat2.det()
+
+        mat3 = mx.Matrix(data=[[3, 7], [1, -4]])
+        self.assertAlmostEqual(mat3.det(), -19)
+
+        mat4 = mx.Matrix(data=[[-2, -1, 2], [2, 1, 4], [-3, 3, -1]])
+        self.assertAlmostEqual(mat4.det(), 54)
+
+        mat5 = mx.Matrix(data=[[1, 2, 1, 2], [-1, 2, 3, 4], [8, 5, -3, 1],
+                               [5, 9, -6, 3]])
+        self.assertAlmostEqual(mat5.det(), 60)
 
 
 def main() -> None:

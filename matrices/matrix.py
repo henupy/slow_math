@@ -1,5 +1,8 @@
 """
 File for a Matrix object
+
+Gaussian elimination algorithm from
+https://martin-thoma.com/solving-linear-equations-with-gaussian-elimination/
 """
 
 from __future__ import annotations
@@ -7,6 +10,28 @@ from __future__ import annotations
 import math
 import random
 import exceptions as exs
+
+from copy import deepcopy
+
+
+class MatrixIterator:
+    def __init__(self, mat_data: list[list]) -> None:
+        """
+        :param mat_data:
+        """
+        self._idx = -1
+        self._data = mat_data
+
+    def __iter__(self) -> MatrixIterator:
+        return self
+
+    def __next__(self) -> list:
+        self._idx += 1
+        try:
+            return self._data[self._idx]
+        except IndexError:
+            self._idx = -1
+            raise StopIteration
 
 
 class Matrix:
@@ -21,7 +46,7 @@ class Matrix:
         """
         # Check that the data only contains numbers and is not empty
         self._validate_data(data=data)
-        self.data = data
+        self._data = data
         # The matrix is in essence validated in this step as well
         self.shape = self._determine_dimensions()
 
@@ -32,6 +57,7 @@ class Matrix:
         :param data:
         :return:
         """
+        # TODO: Perhaps empty matrices should be allowed too
         if not data or (isinstance(data[0], list) and not data[0]):
             msg = "No data provided for the matrix."
             raise exs.EmptyMatrixError(msg)
@@ -59,16 +85,16 @@ class Matrix:
         :return: tuple of (rows, columns)
         """
         # Check if data is of form [1, 2, 3]
-        if not isinstance(self.data[0], list):
-            self.data = [self.data]
-            return 1, len(self.data[0])
+        if not isinstance(self._data[0], list):
+            self._data = [self._data]
+            return 1, len(self._data[0])
         # Check if data is of form [[1, 2, 3]]
-        flat = self._flatten(v=self.data)
-        if self.data[0] == flat:
-            return 1, len(self.data[0])
-        rows = len(self.data)
-        cols = len(self.data[0])
-        if any(len(row) != cols for row in self.data):
+        flat = self._flatten(v=self._data)
+        if self._data[0] == flat:
+            return 1, len(self._data[0])
+        rows = len(self._data)
+        cols = len(self._data[0])
+        if any(len(row) != cols for row in self._data):
             msg = "At least one of the rows of the matrix is of different " \
                   "length than the others."
             raise exs.InvalidRowError(msg)
@@ -82,13 +108,13 @@ class Matrix:
         r, c = self.shape
         if r == 1:
             trans_val = []
-            for num in self.data[0]:
+            for num in self[0]:
                 trans_val.append([num])
             return Matrix(data=trans_val)
         trans_val = [[0] * r for _ in range(c)]
         for i in range(c):
             for j in range(r):
-                trans_val[i][j] = self.data[j][i]
+                trans_val[i][j] = self[j][i]
 
         return Matrix(data=trans_val)
 
@@ -105,7 +131,7 @@ class Matrix:
                   f"has {r * c} elements while the new shape has {new_r * new_c}."
             raise exs.ReshapeError(msg)
         new = [[0] * new_c for _ in range(new_r)]
-        old = self._flatten(v=self.data)
+        old = self._flatten(v=self._data)
         ind = 0
         for j in range(new_r):
             for i in range(new_c):
@@ -119,7 +145,7 @@ class Matrix:
         Calculates the value of the norm of the (flatten) matrix
         :return:
         """
-        flat = self._flatten(v=self.data)
+        flat = self._flatten(v=self._data)
         val = sum(i * i for i in flat) ** .5
         return val
 
@@ -130,7 +156,7 @@ class Matrix:
         """
         r, c = self.shape
         sum_vals = [[0] * c for _ in range(r)]
-        for j, row in enumerate(self.data):
+        for j, row in enumerate(self):
             for i, val in enumerate(row):
                 sum_vals[j][i] = val + other
 
@@ -146,7 +172,7 @@ class Matrix:
             raise exs.DimensionError(msg)
         # Initialise the values for the new matrix
         sum_vals = [[0] * self.shape[1] for _ in range(self.shape[0])]
-        for j, (row1, row2) in enumerate(zip(self.data, other.data)):
+        for j, (row1, row2) in enumerate(zip(self, other)):
             for i, (v1, v2) in enumerate(zip(row1, row2)):
                 sum_vals[j][i] = v1 + v2
 
@@ -159,7 +185,7 @@ class Matrix:
         """
         r, c = self.shape
         sum_vals = [[0] * c for _ in range(r)]
-        for j, row in enumerate(self.data):
+        for j, row in enumerate(self):
             for i, val in enumerate(row):
                 sum_vals[j][i] = val - other
 
@@ -175,7 +201,7 @@ class Matrix:
             raise exs.DimensionError(msg)
         # Initialise the values for the new matrix
         sum_vals = [[0] * self.shape[1] for _ in range(self.shape[0])]
-        for j, (row1, row2) in enumerate(zip(self.data, other.data)):
+        for j, (row1, row2) in enumerate(zip(self, other)):
             for i, (v1, v2) in enumerate(zip(row1, row2)):
                 sum_vals[j][i] = v1 - v2
 
@@ -190,7 +216,7 @@ class Matrix:
         # Initialise a new matrix (or its values)
         r, c = self.shape
         mult_vals = [[0] * c for _ in range(r)]
-        for j, row in enumerate(self.data):
+        for j, row in enumerate(self):
             for i, val in enumerate(row):
                 mult_vals[j][i] = val * other
 
@@ -207,7 +233,7 @@ class Matrix:
             raise exs.DimensionError(msg)
         # Initialise the values for the new matrix
         mult_val = [[0] * self.shape[1] for _ in range(self.shape[0])]
-        for j, (row1, row2) in enumerate(zip(self.data, other.data)):
+        for j, (row1, row2) in enumerate(zip(self, other)):
             for i, (v1, v2) in enumerate(zip(row1, row2)):
                 mult_val[j][i] = v1 * v2
 
@@ -225,25 +251,77 @@ class Matrix:
             flat.extend(row)
         return flat
 
-    def _dot_prod(self, v1: list | list[list], v2: list | list[list]) \
-            -> int | float:
+    @staticmethod
+    def _gaussian_elimination(mat: Matrix) -> tuple[Matrix, list]:
         """
-        Dot product of two vectors. Here used only as a part of the
-        matrix multiplication.
-        :param v1: A row or a column vector
-        :param v2: A row or a column vector
+        See https://martin-thoma.com/solving-linear-equations-with-gaussian-elimination/
+        :param mat:
+        :return: Tuple of the modified matrix and a list of the operations performed
+        to the matrix which also have to be berformed to the determinant
+        """
+        new_mat = Matrix(data=deepcopy(mat._data))
+        n = new_mat.shape[0]
+        opers = []
+        for i in range(n):
+            # Search for maximum in this column
+            max_el = abs(new_mat[i][i])
+            max_row = i
+            for k in range(i + 1, n):
+                if abs(new_mat[k][i]) > max_el:
+                    max_el = abs(new_mat[k][i])
+                    max_row = k
+
+            # Swap maximum row with current row (column by column)
+            if max_row != i:
+                opers.append(-1)
+                for k in range(i, n):
+                    tmp = new_mat[max_row][k]
+                    new_mat[max_row][k] = new_mat[i][k]
+                    new_mat[i][k] = tmp
+
+            # Make all rows below this one 0 in current column
+            for k in range(i + 1, n):
+                c = -new_mat[k][i] / new_mat[i][i]
+                for j in range(i, n):
+                    if i == j:
+                        new_mat[k][j] = 0
+                    else:
+                        new_mat[k][j] += c * new_mat[i][j]
+
+        return new_mat, opers
+
+    def diag(self) -> Matrix:
+        """
         :return:
         """
-        # Flatten the column vector (if there is one)
-        if isinstance(v1[0], list):
-            v1 = self._flatten(v=v1)
-        if isinstance(v2[0], list):
-            v2 = self._flatten(v=v2)
-        if len(v1) != len(v2):
-            raise exs.DimensionError("Vectors must have same length")
-        prod = 0
-        for i, j in zip(v1, v2):
-            prod += i * j
+        # Expect the matrix to be square for now
+        r, c = self.shape
+        if r != c:
+            msg = (f"diag() is now only supported for square matrices. Now dims "
+                   f"are {r}x{c}")
+            raise exs.DimensionError(msg)
+        data = []
+        for i in range(r):
+            data.append(self[i][i])
+        return Matrix(data=data)
+
+    def det(self) -> int | float:
+        """
+        Matrix determinant using the Gaussian elimination. Raises an error if
+        the matrix is not a square matrix.
+        :return:
+        """
+        rows, cols = self.shape
+        if rows != cols:
+            msg = f"Matrix is not a square matrix. Shape is {rows}x{cols}"
+            raise exs.DimensionError(msg)
+        mat, opers = self._gaussian_elimination(mat=self)
+        diag_vals = mat.diag()
+        prod = 1
+        for val in diag_vals[0]:
+            prod *= val
+        for oper in opers:
+            prod *= oper
         return prod
 
     def __add__(self, other: int | float | Matrix) -> Matrix:
@@ -310,7 +388,7 @@ class Matrix:
         :return:
         """
         res = [[0] * self.shape[1] for _ in range(self.shape[0])]
-        for j, row in enumerate(self.data):
+        for j, row in enumerate(self):
             for i, val in enumerate(row):
                 res[j][i] = other / val
 
@@ -353,7 +431,7 @@ class Matrix:
         # of the given matrix
         if power == 0:
             return identity_matrix(n=self.shape[0])
-        res = Matrix(self.data)  # Create a copy of the original matrix
+        res = Matrix(self._data)  # Create a copy of the original matrix
         for _ in range(power - 1):
             res = self @ res
         return res
@@ -363,7 +441,7 @@ class Matrix:
         :return:
         """
         res = [[0] * self.shape[1] for _ in range(self.shape[0])]
-        for j, row in enumerate(self.data):
+        for j, row in enumerate(self):
             for i, val in enumerate(row):
                 res[j][i] = -val
 
@@ -378,7 +456,7 @@ class Matrix:
         # Quick check using the shapes
         if self.shape != other.shape:
             return False
-        for r1, r2 in zip(self.data, other.data):
+        for r1, r2 in zip(self, other):
             for v1, v2 in zip(r1, r2):
                 if v1 != v2:
                     return False
@@ -390,22 +468,45 @@ class Matrix:
         :param indices:
         :return:
         """
-        return self.data[indices]
+        return self._data[indices]
+
+    def __setitem__(self, indices: int, value: int | float) -> None:
+        """
+        :param indices:
+        :param value:
+        """
+        # TODO: Support assignment of lists/sequences of items
+        if isinstance(value, list):
+            if len(value) != len(self[indices]):
+                msg = (f"Trying to insert {len(value)} values into a row of size "
+                       f"{len(self[indices])}")
+                raise ValueError(msg)
+            for i, val in enumerate(value):
+                if type(val) not in [int, float]:
+                    raise ValueError(f"Inserted value must be numerical (int or float).")
+                self[indices][i] = val
+        else:
+            if type(value) not in [int, float]:
+                raise ValueError(f"Inserted value must be numerical (int or float).")
+            self._data[indices] = value
+
+    def __iter__(self) -> MatrixIterator:
+        return MatrixIterator(self._data)
 
     def __str__(self) -> str:
         """
         Some kind of a representation of the matrix
         :return:
         """
-        # If we have only one row, we can use the __str__ of the list-class
+        # If we have only one row, we can use the __str__ of the list class
         if self.shape[0] == 1:
-            return list.__str__(self.data)
-        # If we have multiple rows, let"s try to print them on new lines
+            return list.__str__(self._data)
+        # If we have multiple rows, let's try to print them on new lines
         s = "["  # Initialise a string
         for i in range(self.shape[0] - 1):
-            s += list.__str__(self.data[i]) + "\n"
+            s += list.__str__(self._data[i]) + "\n"
         # Add the last row without a new line character
-        s += list.__str__(self.data[-1]) + "]"
+        s += list.__str__(self._data[-1]) + "]"
         return s
 
 
@@ -449,7 +550,7 @@ def argmax(mat: Matrix) -> int | tuple:
     #     return mat.data[0].index(max(mat.data[0]))
     maxval = float("-inf")
     maxind = (0, 0)
-    for j, row in enumerate(mat.data):
+    for j, row in enumerate(mat):
         for i, val in enumerate(row):
             if val > maxval:
                 maxval = val
@@ -466,7 +567,7 @@ def argmin(mat: Matrix) -> int | tuple:
     """
     minval = float("inf")
     minind = (0, 0)
-    for j, row in enumerate(mat.data):
+    for j, row in enumerate(mat):
         for i, val in enumerate(row):
             if val < minval:
                 minval = val
@@ -538,7 +639,7 @@ def _relative_diff(mat1: Matrix, mat2: Matrix) -> Matrix:
         raise exs.DimensionError(msg)
     diff = []
     ind = 0
-    for r1, r2 in zip(mat1.data, mat2.data):
+    for r1, r2 in zip(mat1, mat2):
         diff.append([])
         for v1, v2 in zip(r1, r2):
             if v1 != 0:
@@ -571,7 +672,7 @@ def elem_exp(mat: Matrix) -> Matrix:
     :return:
     """
     res = [[0.] * mat.shape[1] for _ in range(mat.shape[0])]
-    for j, row in enumerate(mat.data):
+    for j, row in enumerate(mat):
         for i, val in enumerate(row):
             res[j][i] = math.exp(val)
 
@@ -614,3 +715,18 @@ def mat_exp(mat: Matrix, rtol: int | float = 1e-9,
         old_res = new_res
         n += 1
     return new_res
+
+
+def main() -> None:
+    mat1 = Matrix(data=[[-2, -1, 2], [2, 1, 4], [-3, 3, -1]])
+    mat2 = Matrix(data=[[2, 1, -1], [-3, -1, 2], [-2, 1, 2]])
+    mat3 = Matrix(data=[[3, 7], [1, -4]])
+    print(mat1.det())
+    print()
+    print(mat2.det())
+    print()
+    print(mat3.det())
+
+
+if __name__ == "__main__":
+    main()
