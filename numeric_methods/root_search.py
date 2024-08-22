@@ -36,7 +36,7 @@ def _sign(num: int | float) -> int:
     return -1
 
 
-def split(f: callable, neg_guess: int | float,
+def bisect(f: callable, neg_guess: int | float,
           pos_guess: int | float, limit: float) -> float:
     """
     Finds the root by taking one negative and one positive guesses,
@@ -59,7 +59,7 @@ def split(f: callable, neg_guess: int | float,
     return c
 
 
-def polyfun(x: int | float) -> float:
+def foo(x: int | float) -> float:
     return 5 * math.atan(x) - x + 1
 
 
@@ -67,10 +67,10 @@ def main():
     guess, limit = 0, 0.0001
     neg, pos = -1, 1
     diff = middle
-    root_newton = newton(polyfun, diff, guess, limit)
-    root_split = split(polyfun, neg, pos, limit)
+    root_newton = newton(foo, diff, guess, limit)
+    root_bisect = bisect(foo, neg, pos, limit)
     print(f"Root (newton): {root_newton}")
-    print(f"Root (split): {root_split}")
+    print(f"Root (bisect): {root_bisect}")
 
 
 if __name__ == "__main__":
