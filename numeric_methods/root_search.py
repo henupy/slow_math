@@ -36,27 +36,36 @@ def _sign(num: int | float) -> int:
     return -1
 
 
-def bisect(f: callable, neg_guess: int | float,
-          pos_guess: int | float, limit: float) -> float:
+def bisect(f: callable, a: int | float, b: int | float, limit: float) -> float:
     """
     Finds the root by taking one negative and one positive guesses,
     that should be located around the root, and closes in on the root
     via some kind of binary search
     :param f: The function for which the root is to be found
-    :param neg_guess:
-    :param pos_guess:
+    :param a:
+    :param b:
     :param limit:
     :return:
     """
-    c = 0
-    while abs(pos_guess - neg_guess) > limit:
-        c = (neg_guess + pos_guess) / 2
-        if _sign(f(c)) == _sign(f(neg_guess)):
-            neg_guess = c
+    if a >= b:
+        raise ValueError("a must be smaller than b")
+    aval = f(a)
+    bval = f(b)
+    neg = min(aval, bval)
+    pos = max(aval, bval)
+    if not neg < 0 and pos > 0:
+        msg = "f must have a negative value with one guess and positive with the other"
+        raise ValueError(msg)
+    iters = 10000
+    c, mid = 0, 0
+    while abs(a - b) > limit and c < iters:
+        mid = (a + b) / 2
+        if _sign(f(mid)) == _sign(f(a)):
+            a = mid
         else:
-            pos_guess = c
-
-    return c
+            b = mid
+        c += 1
+    return mid
 
 
 def foo(x: int | float) -> float:
